@@ -176,6 +176,12 @@
     "orders": "Orders",
     "requests": "Requests",
     "noOrders": "No orders yet",
-    "noRequests": "No requests yet"
+    "noRequests": "No requests yet",
+    "orderStatus": {
+      "new": "New",
+      "confirmed": "Confirmed",
+      "done": "Completed",
+      "cancelled": "Cancelled"
+    }
   }
 }

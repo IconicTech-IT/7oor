@@ -176,6 +176,12 @@
     "orders": "الطلبات",
     "requests": "الطلبات الخاصة",
     "noOrders": "لا يوجد طلبات بعد",
-    "noRequests": "لا يوجد طلبات خاصة بعد"
+    "noRequests": "لا يوجد طلبات خاصة بعد",
+    "orderStatus": {
+      "new": "جديد",
+      "confirmed": "تم التأكيد",
+      "done": "مكتمل",
+      "cancelled": "ملغي"
+    }
   }
 }
