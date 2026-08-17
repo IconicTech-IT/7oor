@@ -7,6 +7,7 @@ import {
   Truck,
   Wallet,
   Settings,
+  MessageSquareText,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
@@ -19,6 +20,7 @@ const NAV: NavItem[] = [
   { href: "/admin/products", label: "Products", icon: Package, roles: ["admin", "staff"] },
   { href: "/admin/categories", label: "Categories", icon: FolderTree, roles: ["admin", "staff"] },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart, roles: ["admin", "staff"] },
+  { href: "/admin/requests", label: "Requests", icon: MessageSquareText, roles: ["admin", "staff"] },
   { href: "/admin/inventory", label: "Inventory", icon: Warehouse, roles: ["admin", "staff"] },
   { href: "/admin/purchases", label: "Purchases", icon: Truck, roles: ["admin", "staff"] },
   { href: "/admin/accounting", label: "Accounting", icon: Wallet, roles: ["admin"] },
