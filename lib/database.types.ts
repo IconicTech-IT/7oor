@@ -820,6 +820,16 @@ export type Database = {
         Args: { p_sales_order_id: string }
         Returns: undefined
       }
+      create_sales_order: {
+        Args: {
+          p_delivery_address: string
+          p_fulfillment_method: string
+          p_items: Json
+          p_payment_method: string
+          p_payment_screenshot_path: string
+        }
+        Returns: string
+      }
       deduct_fifo: {
         Args: {
           p_product_id: string

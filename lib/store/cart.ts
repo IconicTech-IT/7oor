@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useSyncExternalStore } from "react";
 
 export type CartItem = {
   productId: string;
@@ -83,4 +84,13 @@ export function cartSubtotal(items: CartItem[]) {
 
 export function cartCount(items: CartItem[]) {
   return items.reduce((sum, i) => sum + i.qty, 0);
+}
+
+/** True once the persisted cart has been read from localStorage — avoids an SSR/client mismatch. */
+export function useCartHydrated() {
+  return useSyncExternalStore(
+    (callback) => useCartStore.persist.onFinishHydration(callback),
+    () => useCartStore.persist.hasHydrated(),
+    () => false,
+  );
 }

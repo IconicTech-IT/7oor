@@ -45,7 +45,12 @@
       "eyebrow": "Our services",
       "title": "Printing, photocopying & custom writing",
       "subtitle": "Need documents copied, a job printed, or something custom written? We've got you.",
-      "cta": "Request a service"
+      "cta": "Request a service",
+      "items": {
+        "photocopy": "Photocopying",
+        "print": "Printing",
+        "write": "Custom writing"
+      }
     },
     "cta": {
       "title": "Visit us or order online",
@@ -157,6 +162,8 @@
     "address": "Address",
     "phone": "Phone",
     "hours": "Working hours",
+    "name": "Name",
+    "contactInfo": "Email or phone",
     "message": "Message",
     "send": "Send message",
     "success": "Your message was sent successfully"

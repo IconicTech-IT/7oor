@@ -4,9 +4,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X, Minus, Plus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useTranslations, useLocale } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Link } from "@/i18n/navigation";
-import { useCartStore, cartSubtotal } from "@/lib/store/cart";
+import { useCartStore, cartSubtotal, useCartHydrated } from "@/lib/store/cart";
 import { useDirSign } from "@/lib/rtl";
 import { formatEGP } from "@/lib/currency";
 
@@ -19,9 +19,8 @@ export function CartDrawer() {
   const t = useTranslations("cart");
   const locale = useLocale() as "ar" | "en";
   const dirSign = useDirSign();
-  const [mounted, setMounted] = useState(false);
+  const hydrated = useCartHydrated();
 
-  useEffect(() => setMounted(true), []);
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => {
@@ -29,7 +28,7 @@ export function CartDrawer() {
     };
   }, [isOpen]);
 
-  if (!mounted) return null;
+  if (!hydrated) return null;
 
   return (
     <AnimatePresence>
