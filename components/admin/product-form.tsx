@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Formik, Form, Field, ErrorMessage, FieldArray } from "formik";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { productSchema } from "@/lib/validators/product";
 import { saveProductAction } from "@/lib/actions/products";
@@ -34,6 +35,9 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
   const router = useRouter();
   const isEdit = Boolean(initial);
   const [showQuickCreateCategory, setShowQuickCreateCategory] = useState(false);
+  const t = useTranslations("admin.products.form");
+  const tProducts = useTranslations("admin.products");
+  const tCommon = useTranslations("admin.common");
 
   const topLevelCategories = categories.filter((c) => !c.parent_id);
 
@@ -80,7 +84,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
           setSubmitting(false);
           return;
         }
-        toast.success(isEdit ? "Product updated" : "Product created");
+        toast.success(isEdit ? tProducts("toastUpdated") : tProducts("toastCreated"));
         router.push("/admin/products");
       }}
     >
@@ -88,7 +92,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
         <Form className="flex flex-col gap-8">
           <section className="grid gap-4 rounded-2xl border border-border bg-card p-5 sm:grid-cols-2">
             <div>
-              <label className={labelClass}>Name (EN)</label>
+              <label className={labelClass}>{t("nameEn")}</label>
               <Field
                 name="nameEn"
                 className={inputClass}
@@ -100,20 +104,20 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
               <ErrorMessage name="nameEn" component="p" className="mt-1 text-xs text-danger" />
             </div>
             <div>
-              <label className={labelClass}>Name (AR)</label>
+              <label className={labelClass}>{t("nameAr")}</label>
               <Field name="nameAr" dir="rtl" className={inputClass} />
               <ErrorMessage name="nameAr" component="p" className="mt-1 text-xs text-danger" />
             </div>
             <div>
-              <label className={labelClass}>Slug</label>
+              <label className={labelClass}>{t("slug")}</label>
               <Field name="slug" dir="ltr" className={inputClass} />
               <ErrorMessage name="slug" component="p" className="mt-1 text-xs text-danger" />
             </div>
             <div>
-              <label className={labelClass}>Category</label>
+              <label className={labelClass}>{t("category")}</label>
               <div className="flex gap-2">
                 <Field as="select" name="categoryId" className={inputClass}>
-                  <option value="">— None —</option>
+                  <option value="">{tCommon("noneOption")}</option>
                   {topLevelCategories.map((top) => (
                     <optgroup key={top.id} label={top.name_en}>
                       <option value={top.id}>{top.name_en}</option>
@@ -132,7 +136,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                   onClick={() => setShowQuickCreateCategory((v) => !v)}
                   className="shrink-0 rounded-lg border border-border px-3 text-xs font-bold hover:border-primary"
                 >
-                  + New
+                  {t("newCategory")}
                 </button>
               </div>
             </div>
@@ -153,65 +157,65 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
             )}
 
             <div>
-              <label className={labelClass}>Type</label>
+              <label className={labelClass}>{t("type")}</label>
               <Field as="select" name="type" className={inputClass}>
-                <option value="simple">Simple</option>
-                <option value="combo">Combo / Bundle</option>
-                <option value="custom_request">Custom request (routes to Requests)</option>
+                <option value="simple">{t("typeSimple")}</option>
+                <option value="combo">{t("typeCombo")}</option>
+                <option value="custom_request">{t("typeCustomRequest")}</option>
               </Field>
             </div>
             <div>
-              <label className={labelClass}>Pricing unit</label>
+              <label className={labelClass}>{t("pricingUnit")}</label>
               <Field as="select" name="pricingUnit" className={inputClass}>
-                <option value="item">Per item</option>
-                <option value="page">Per page</option>
-                <option value="job">Per job</option>
+                <option value="item">{t("pricingUnitItem")}</option>
+                <option value="page">{t("pricingUnitPage")}</option>
+                <option value="job">{t("pricingUnitJob")}</option>
               </Field>
             </div>
 
             <div>
-              <label className={labelClass}>Price (EGP)</label>
+              <label className={labelClass}>{t("price")}</label>
               <Field type="number" step="0.01" name="price" className={inputClass} />
               <ErrorMessage name="price" component="p" className="mt-1 text-xs text-danger" />
             </div>
             <div>
-              <label className={labelClass}>Low stock threshold</label>
+              <label className={labelClass}>{t("lowStockThreshold")}</label>
               <Field type="number" name="lowStockThreshold" className={inputClass} />
             </div>
 
             <div className="sm:col-span-2">
               <ImageUploadField
-                label="Product image"
+                label={tProducts("imageUpload.productImage")}
                 value={values.imageUrl}
                 onChange={(url) => setFieldValue("imageUrl", url)}
               />
             </div>
 
             <div>
-              <label className={labelClass}>Short description (EN)</label>
+              <label className={labelClass}>{t("shortDescriptionEn")}</label>
               <Field as="textarea" rows={2} name="shortDescriptionEn" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Short description (AR)</label>
+              <label className={labelClass}>{t("shortDescriptionAr")}</label>
               <Field as="textarea" rows={2} dir="rtl" name="shortDescriptionAr" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Full description (EN)</label>
+              <label className={labelClass}>{t("descriptionEn")}</label>
               <Field as="textarea" rows={4} name="descriptionEn" className={inputClass} />
             </div>
             <div>
-              <label className={labelClass}>Full description (AR)</label>
+              <label className={labelClass}>{t("descriptionAr")}</label>
               <Field as="textarea" rows={4} dir="rtl" name="descriptionAr" className={inputClass} />
             </div>
 
             <label className="flex items-center gap-2 text-sm font-semibold">
               <Field type="checkbox" name="isActive" />
-              Active (visible on storefront)
+              {t("active")}
             </label>
             {values.type === "combo" && (
               <label className="flex items-center gap-2 text-sm font-semibold">
                 <Field type="checkbox" name="comboForceAvailable" />
-                Force available (ignore component stock)
+                {t("forceAvailable")}
               </label>
             )}
           </section>
@@ -219,7 +223,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
           {values.type !== "combo" && (
             <section className="rounded-2xl border border-border bg-card p-5">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="text-sm font-bold">Variants</h2>
+                <h2 className="text-sm font-bold">{t("variants")}</h2>
               </div>
               <FieldArray name="variants">
                 {({ push, remove }) => (
@@ -227,28 +231,28 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                     {values.variants.map((_, i) => (
                       <div key={i} className="grid gap-3 rounded-xl border border-border p-4 sm:grid-cols-6">
                         <div className="sm:col-span-2">
-                          <label className={labelClass}>Name (EN)</label>
+                          <label className={labelClass}>{t("variantNameEn")}</label>
                           <Field name={`variants.${i}.nameEn`} className={inputClass} />
                         </div>
                         <div className="sm:col-span-2">
-                          <label className={labelClass}>Name (AR)</label>
+                          <label className={labelClass}>{t("variantNameAr")}</label>
                           <Field name={`variants.${i}.nameAr`} dir="rtl" className={inputClass} />
                         </div>
                         <div>
-                          <label className={labelClass}>SKU</label>
+                          <label className={labelClass}>{t("sku")}</label>
                           <Field name={`variants.${i}.sku`} className={inputClass} />
                         </div>
                         <div>
-                          <label className={labelClass}>Price override</label>
+                          <label className={labelClass}>{t("priceOverride")}</label>
                           <Field type="number" step="0.01" name={`variants.${i}.price`} className={inputClass} />
                         </div>
                         <div>
-                          <label className={labelClass}>Color</label>
+                          <label className={labelClass}>{t("color")}</label>
                           <Field type="color" name={`variants.${i}.colorHex`} className="h-9 w-full rounded-lg border border-border" />
                         </div>
                         <div className="sm:col-span-2">
                           <ImageUploadField
-                            label="Variant image"
+                            label={tProducts("imageUpload.variantImage")}
                             value={values.variants[i].imageUrl ?? ""}
                             onChange={(url) => setFieldValue(`variants.${i}.imageUrl`, url)}
                           />
@@ -259,7 +263,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                             onClick={() => remove(i)}
                             className="inline-flex items-center gap-1.5 rounded-lg border border-danger/30 px-3 py-2 text-xs font-bold text-danger hover:bg-danger/10"
                           >
-                            <Trash2 className="h-3.5 w-3.5" /> Remove variant
+                            <Trash2 className="h-3.5 w-3.5" /> {t("removeVariant")}
                           </button>
                         </div>
                       </div>
@@ -271,7 +275,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                       }
                       className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-bold hover:border-primary"
                     >
-                      <Plus className="h-3.5 w-3.5" /> Add variant
+                      <Plus className="h-3.5 w-3.5" /> {t("addVariant")}
                     </button>
                   </div>
                 )}
@@ -281,7 +285,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
 
           {values.type === "combo" && (
             <section className="rounded-2xl border border-border bg-card p-5">
-              <h2 className="mb-4 text-sm font-bold">Bundle components</h2>
+              <h2 className="mb-4 text-sm font-bold">{t("bundleComponents")}</h2>
               <FieldArray name="comboComponents">
                 {({ push, remove }) => (
                   <div className="flex flex-col gap-3">
@@ -292,9 +296,9 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                       return (
                         <div key={i} className="grid gap-3 rounded-xl border border-border p-4 sm:grid-cols-8">
                           <div className="sm:col-span-4">
-                            <label className={labelClass}>Product</label>
+                            <label className={labelClass}>{t("componentProduct")}</label>
                             <Field as="select" name={`comboComponents.${i}.componentProductId`} className={inputClass}>
-                              <option value="">— Select —</option>
+                              <option value="">{tCommon("selectPlaceholder")}</option>
                               {allProducts
                                 .filter((p) => p.type !== "combo" && p.id !== initial?.id)
                                 .map((p) => (
@@ -305,9 +309,9 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                             </Field>
                           </div>
                           <div className="sm:col-span-2">
-                            <label className={labelClass}>Variant</label>
+                            <label className={labelClass}>{t("componentVariant")}</label>
                             <Field as="select" name={`comboComponents.${i}.componentVariantId`} className={inputClass}>
-                              <option value="">— Any / none —</option>
+                              <option value="">{t("anyNoneOption")}</option>
                               {selectedProduct?.variants.map((v) => (
                                 <option key={v.id} value={v.id}>
                                   {v.name_en}
@@ -316,7 +320,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                             </Field>
                           </div>
                           <div>
-                            <label className={labelClass}>Qty</label>
+                            <label className={labelClass}>{t("qty")}</label>
                             <Field type="number" min={1} name={`comboComponents.${i}.qty`} className={inputClass} />
                           </div>
                           <div className="flex items-end">
@@ -336,7 +340,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
                       onClick={() => push({ componentProductId: "", componentVariantId: "", qty: 1 })}
                       className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-bold hover:border-primary"
                     >
-                      <Plus className="h-3.5 w-3.5" /> Add component
+                      <Plus className="h-3.5 w-3.5" /> {t("addComponent")}
                     </button>
                   </div>
                 )}
@@ -350,7 +354,7 @@ export function ProductForm({ categories, allProducts, initial }: Props) {
               disabled={isSubmitting}
               className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
             >
-              {isSubmitting ? "Saving..." : isEdit ? "Save changes" : "Create product"}
+              {isSubmitting ? t("saving") : isEdit ? t("saveChanges") : t("createProduct")}
             </button>
           </div>
         </Form>

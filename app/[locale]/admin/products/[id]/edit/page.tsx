@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getAllCategoriesFlat } from "@/lib/data/categories";
 import { getAllProductsAdmin, getProductByIdAdmin } from "@/lib/data/products";
 import { ProductForm } from "@/components/admin/product-form";
@@ -19,9 +20,11 @@ export default async function EditProductPage({
 
   if (!product) notFound();
 
+  const t = await getTranslations("admin.products");
+
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">Edit Product</h1>
+      <h1 className="text-2xl font-extrabold">{t("editTitle")}</h1>
       <div className="mt-6">
         <ProductForm categories={categories} allProducts={allProducts} initial={product} />
       </div>

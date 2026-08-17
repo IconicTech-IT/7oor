@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { ImageOff, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
 
 export function ImageUploadField({ value, onChange, label }: Props) {
   const [uploading, setUploading] = useState(false);
+  const t = useTranslations("admin.products.imageUpload");
 
   async function handleFile(file: File) {
     setUploading(true);
@@ -28,7 +30,7 @@ export function ImageUploadField({ value, onChange, label }: Props) {
       const { data } = supabase.storage.from("product-images").getPublicUrl(path);
       onChange(data.publicUrl);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed");
+      toast.error(err instanceof Error ? err.message : t("uploadFailed"));
     } finally {
       setUploading(false);
     }
@@ -49,7 +51,7 @@ export function ImageUploadField({ value, onChange, label }: Props) {
         </div>
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border px-3 py-2 text-xs font-semibold hover:border-primary">
           {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-          {uploading ? "Uploading..." : "Upload"}
+          {uploading ? t("uploading") : t("upload")}
           <input
             type="file"
             accept="image/*"

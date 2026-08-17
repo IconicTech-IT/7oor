@@ -208,6 +208,290 @@
       "accounting": "Accounting",
       "settings": "Settings",
       "staff": "Staff"
+    },
+    "common": {
+      "selectPlaceholder": "— Select —",
+      "noneOption": "— None —"
+    },
+    "dashboard": {
+      "title": "Dashboard",
+      "subtitle": "Use the sidebar to manage products, categories, orders, inventory, purchases, and accounting.",
+      "stats": {
+        "activeProducts": "Active Products",
+        "openOrders": "Open Orders",
+        "catalogSize": "Catalog Size",
+        "needsAttention": "Needs Attention"
+      }
+    },
+    "products": {
+      "title": "Products",
+      "addProduct": "Add product",
+      "newTitle": "New Product",
+      "editTitle": "Edit Product",
+      "table": {
+        "product": "Product",
+        "type": "Type",
+        "category": "Category",
+        "price": "Price",
+        "status": "Status"
+      },
+      "status": {
+        "active": "Active",
+        "hidden": "Hidden"
+      },
+      "deleteConfirm": "Delete this product? This cannot be undone.",
+      "toastDeleted": "Product deleted",
+      "toastCreated": "Product created",
+      "toastUpdated": "Product updated",
+      "imageUpload": {
+        "uploading": "Uploading...",
+        "upload": "Upload",
+        "productImage": "Product image",
+        "variantImage": "Variant image",
+        "uploadFailed": "Upload failed"
+      },
+      "form": {
+        "nameEn": "Name (EN)",
+        "nameAr": "Name (AR)",
+        "slug": "Slug",
+        "category": "Category",
+        "newCategory": "+ New",
+        "type": "Type",
+        "typeSimple": "Simple",
+        "typeCombo": "Combo / Bundle",
+        "typeCustomRequest": "Custom request (routes to Requests)",
+        "pricingUnit": "Pricing unit",
+        "pricingUnitItem": "Per item",
+        "pricingUnitPage": "Per page",
+        "pricingUnitJob": "Per job",
+        "price": "Price (EGP)",
+        "lowStockThreshold": "Low stock threshold",
+        "shortDescriptionEn": "Short description (EN)",
+        "shortDescriptionAr": "Short description (AR)",
+        "descriptionEn": "Full description (EN)",
+        "descriptionAr": "Full description (AR)",
+        "active": "Active (visible on storefront)",
+        "forceAvailable": "Force available (ignore component stock)",
+        "variants": "Variants",
+        "variantNameEn": "Name (EN)",
+        "variantNameAr": "Name (AR)",
+        "sku": "SKU",
+        "priceOverride": "Price override",
+        "color": "Color",
+        "removeVariant": "Remove variant",
+        "addVariant": "Add variant",
+        "bundleComponents": "Bundle components",
+        "componentProduct": "Product",
+        "componentVariant": "Variant",
+        "anyNoneOption": "— Any / none —",
+        "qty": "Qty",
+        "addComponent": "Add component",
+        "saving": "Saving...",
+        "saveChanges": "Save changes",
+        "createProduct": "Create product"
+      }
+    },
+    "categories": {
+      "title": "Categories",
+      "subtitle": "Manage top-level categories and their sub-categories.",
+      "addCategory": "Add category",
+      "deleteConfirm": "Delete this category? Products in it will become uncategorized.",
+      "toastDeleted": "Category deleted",
+      "toastCreated": "Category created",
+      "toastUpdated": "Category updated",
+      "form": {
+        "nameEn": "Name (EN)",
+        "nameAr": "Name (AR)",
+        "slug": "Slug",
+        "parent": "Parent",
+        "topLevelOption": "— Top level —"
+      }
+    },
+    "orders": {
+      "title": "Orders",
+      "subtitle": "Updates live as customers check out.",
+      "empty": "No orders yet.",
+      "itemCount": "{count, plural, one {# item} other {# items}}",
+      "toastUpdated": "Order updated",
+      "actions": {
+        "confirming": "Confirming...",
+        "confirmOrder": "Confirm order",
+        "completing": "Completing...",
+        "markDone": "Mark as Done",
+        "cancelling": "Cancelling..."
+      },
+      "screenshot": {
+        "view": "View payment screenshot",
+        "open": "Open screenshot"
+      },
+      "detail": {
+        "customer": "Customer",
+        "fulfillment": "Fulfillment",
+        "payment": "Payment",
+        "invoice": "Invoice",
+        "notGenerated": "Not yet generated",
+        "items": "Items",
+        "cogs": "COGS",
+        "subtotal": "Subtotal"
+      }
+    },
+    "requests": {
+      "title": "Requests",
+      "subtitle": "Custom items, bulk orders, and special jobs.",
+      "empty": "No requests yet.",
+      "toastUpdated": "Request updated",
+      "attachment": {
+        "view": "View attachment",
+        "open": "Open attachment"
+      },
+      "detail": {
+        "contact": "Contact",
+        "customerAccount": "Customer account",
+        "category": "Category",
+        "qtyBudget": "Qty / Budget",
+        "fulfillment": "Fulfillment",
+        "description": "Description",
+        "updateStatus": "Update status"
+      },
+      "form": {
+        "status": "Status",
+        "adminNotes": "Admin notes",
+        "saving": "Saving..."
+      }
+    },
+    "inventory": {
+      "title": "Inventory",
+      "subtitle": "On Hand minus Reserved (open sales orders) gives what's actually free to sell.",
+      "table": {
+        "product": "Product",
+        "onHand": "On Hand",
+        "reserved": "Reserved",
+        "available": "Available",
+        "reason": "Reason",
+        "qty": "Qty",
+        "date": "Date"
+      },
+      "recentMovements": "Recent movements",
+      "reasons": {
+        "adjustment": "Adjustment",
+        "damaged": "Damaged",
+        "purchase": "Purchase",
+        "sale": "Sale"
+      },
+      "adjust": "Adjust",
+      "adjustDialogTitle": "Adjust stock — {label}",
+      "toastAdjusted": "Stock adjusted",
+      "form": {
+        "direction": "Direction",
+        "directionIn": "In (found stock)",
+        "directionOut": "Out (remove stock)",
+        "quantity": "Quantity",
+        "reason": "Reason",
+        "reasonAdjustment": "Adjustment / stock count",
+        "reasonDamaged": "Damaged",
+        "notes": "Notes",
+        "saving": "Saving...",
+        "saveAdjustment": "Save adjustment"
+      }
+    },
+    "purchases": {
+      "title": "Purchases",
+      "newOrder": "New purchase order",
+      "newTitle": "New Purchase Order",
+      "empty": "No purchase orders yet.",
+      "itemCount": "{count, plural, one {# item} other {# items}}",
+      "status": {
+        "draft": "Draft",
+        "ordered": "Ordered",
+        "received": "Received"
+      },
+      "toastCreated": "Purchase order created",
+      "toastMarkedOrdered": "Marked as ordered",
+      "toastReceived": "Purchase order received — stock updated",
+      "receiveConfirm": "Receive this order? This creates stock lots at the recorded unit cost.",
+      "actions": {
+        "markOrdered": "Mark as Ordered",
+        "receive": "Receive"
+      },
+      "detail": {
+        "items": "Items",
+        "receivedQty": "received {qty}",
+        "totalCost": "Total cost",
+        "notes": "Notes"
+      },
+      "form": {
+        "supplier": "Supplier",
+        "newSupplier": "+ New supplier",
+        "notes": "Notes",
+        "lineItems": "Line items",
+        "product": "Product",
+        "variant": "Variant",
+        "qty": "Qty",
+        "unitCost": "Unit cost",
+        "addItem": "Add item",
+        "creating": "Creating...",
+        "createOrder": "Create purchase order"
+      },
+      "supplierForm": {
+        "name": "Name",
+        "phone": "Phone",
+        "email": "Email",
+        "addSupplier": "Add supplier"
+      },
+      "toastSupplierAdded": "Supplier added"
+    },
+    "accounting": {
+      "title": "Accounting",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "stats": {
+        "revenue": "Revenue",
+        "cogs": "COGS",
+        "grossProfit": "Gross Profit",
+        "expenses": "Expenses",
+        "netProfit": "Net Profit"
+      },
+      "topSellingProducts": "Top selling products",
+      "table": {
+        "product": "Product",
+        "qtySold": "Qty sold",
+        "revenue": "Revenue",
+        "margin": "Margin"
+      },
+      "noSales": "No completed sales in this range.",
+      "lowStock": "Low stock",
+      "lowStockTable": {
+        "product": "Product",
+        "available": "Available",
+        "threshold": "Threshold"
+      },
+      "invoices": "Invoices",
+      "bills": "Bills (purchases)",
+      "noBills": "No bills recorded yet.",
+      "ledger": "Ledger",
+      "ledgerTable": {
+        "date": "Date",
+        "type": "Type",
+        "description": "Description",
+        "amount": "Amount"
+      },
+      "invoiceStatus": {
+        "paid": "Paid",
+        "pending": "Pending"
+      },
+      "ledgerType": {
+        "revenue": "Revenue",
+        "cogs": "COGS",
+        "expense": "Expense"
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "deliveryFee": "Delivery fee",
+      "deliveryFeeLabel": "Delivery fee (EGP)",
+      "saving": "Saving...",
+      "toastUpdated": "Delivery fee updated"
     }
   }
 }

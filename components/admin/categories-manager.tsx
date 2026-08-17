@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { deleteCategoryAction } from "@/lib/actions/categories";
 import { CategoryForm } from "./category-form";
 import type { Category } from "@/lib/types";
@@ -11,12 +12,14 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
   const topLevel = categories.filter((c) => !c.parent_id);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [showNew, setShowNew] = useState(false);
+  const t = useTranslations("admin.categories");
+  const tCommon = useTranslations("common");
 
   async function handleDelete(id: string) {
-    if (!confirm("Delete this category? Products in it will become uncategorized.")) return;
+    if (!confirm(t("deleteConfirm"))) return;
     const result = await deleteCategoryAction(id);
     if (result.error) toast.error(result.error);
-    else toast.success("Category deleted");
+    else toast.success(t("toastDeleted"));
   }
 
   return (
@@ -32,7 +35,7 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover"
           >
             <Plus className="h-4 w-4" />
-            Add category
+            {t("addCategory")}
           </button>
         )}
       </div>
@@ -47,6 +50,8 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
               onEdit={() => setEditingId(cat.id)}
               onCancel={() => setEditingId(null)}
               onDelete={() => handleDelete(cat.id)}
+              editLabel={tCommon("edit")}
+              deleteLabel={tCommon("delete")}
             />
             {(cat.children ?? []).length > 0 && (
               <div className="flex flex-col gap-1 border-t border-border p-2 ps-8">
@@ -59,6 +64,8 @@ export function CategoriesManager({ categories }: { categories: Category[] }) {
                     onEdit={() => setEditingId(child.id)}
                     onCancel={() => setEditingId(null)}
                     onDelete={() => handleDelete(child.id)}
+                    editLabel={tCommon("edit")}
+                    deleteLabel={tCommon("delete")}
                     nested
                   />
                 ))}
@@ -78,6 +85,8 @@ function CategoryRow({
   onEdit,
   onCancel,
   onDelete,
+  editLabel,
+  deleteLabel,
   nested,
 }: {
   category: Category;
@@ -86,6 +95,8 @@ function CategoryRow({
   onEdit: () => void;
   onCancel: () => void;
   onDelete: () => void;
+  editLabel: string;
+  deleteLabel: string;
   nested?: boolean;
 }) {
   if (editing) {
@@ -105,13 +116,13 @@ function CategoryRow({
         <p className="text-xs text-muted">/{category.slug}</p>
       </div>
       <div className="flex items-center gap-1">
-        <button onClick={onEdit} className="rounded-lg p-2 hover:bg-foreground/5" aria-label="Edit">
+        <button onClick={onEdit} className="rounded-lg p-2 hover:bg-foreground/5" aria-label={editLabel}>
           <Pencil className="h-4 w-4" />
         </button>
         <button
           onClick={onDelete}
           className="rounded-lg p-2 text-danger hover:bg-danger/10"
-          aria-label="Delete"
+          aria-label={deleteLabel}
         >
           <Trash2 className="h-4 w-4" />
         </button>

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getPurchaseOrderDetail } from "@/lib/data/purchases";
 import { formatEGP } from "@/lib/currency";
 import { PurchaseOrderActions } from "@/components/admin/purchase-order-actions";
@@ -20,6 +21,7 @@ export default async function PurchaseOrderDetailPage({
   const po = await getPurchaseOrderDetail(id);
   if (!po) notFound();
 
+  const t = await getTranslations("admin.purchases");
   const total = po.items.reduce((sum, i) => sum + i.qty_ordered * i.unit_cost, 0);
 
   return (
@@ -35,14 +37,14 @@ export default async function PurchaseOrderDetailPage({
               STATUS_COLORS[po.status] ?? ""
             }`}
           >
-            {po.status}
+            {t.has(`status.${po.status}`) ? t(`status.${po.status}` as "status.draft") : po.status}
           </span>
           <PurchaseOrderActions id={po.id} status={po.status} />
         </div>
       </div>
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5">
-        <p className="mb-3 text-xs font-bold uppercase text-muted">Items</p>
+        <p className="mb-3 text-xs font-bold uppercase text-muted">{t("detail.items")}</p>
         <ul className="flex flex-col gap-3">
           {po.items.map((item) => (
             <li key={item.id} className="flex justify-between text-sm">
@@ -50,7 +52,9 @@ export default async function PurchaseOrderDetailPage({
                 {item.qty_ordered}× {item.product?.name_en}
                 {item.variant && <span className="text-muted"> — {item.variant.name_en}</span>}
                 {po.status === "received" && (
-                  <span className="ms-2 text-xs text-success">received {item.qty_received}</span>
+                  <span className="ms-2 text-xs text-success">
+                    {t("detail.receivedQty", { qty: item.qty_received })}
+                  </span>
                 )}
               </span>
               <span className="font-semibold">
@@ -61,14 +65,14 @@ export default async function PurchaseOrderDetailPage({
           ))}
         </ul>
         <div className="mt-4 flex justify-between border-t border-border pt-4 text-base font-extrabold">
-          <span>Total cost</span>
+          <span>{t("detail.totalCost")}</span>
           <span className="text-primary">{formatEGP(total, "en")}</span>
         </div>
       </div>
 
       {po.notes && (
         <div className="mt-4 rounded-2xl border border-border bg-card p-4 text-sm">
-          <p className="text-xs font-bold uppercase text-muted">Notes</p>
+          <p className="text-xs font-bold uppercase text-muted">{t("detail.notes")}</p>
           <p className="mt-1">{po.notes}</p>
         </div>
       )}

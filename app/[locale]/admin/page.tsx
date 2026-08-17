@@ -1,5 +1,7 @@
 import { Package, ShoppingCart, Warehouse, FileWarning } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
+import { getLowStockCount } from "@/lib/data/inventory";
 
 export const dynamic = "force-dynamic";
 
@@ -25,29 +27,29 @@ async function StatCard({
 
 export default async function AdminDashboardPage() {
   const supabase = await createClient();
+  const t = await getTranslations("admin.dashboard");
 
-  const [{ count: productCount }, { count: newOrders }, { count: lowStock }] = await Promise.all([
-    supabase.from("products").select("*", { count: "exact", head: true }).eq("is_active", true),
-    supabase
-      .from("sales_orders")
-      .select("*", { count: "exact", head: true })
-      .in("status", ["new", "confirmed"]),
-    supabase.from("products").select("*", { count: "exact", head: true }),
-  ]);
+  const [{ count: productCount }, { count: newOrders }, { count: catalogSize }, needsAttention] =
+    await Promise.all([
+      supabase.from("products").select("*", { count: "exact", head: true }).eq("is_active", true),
+      supabase
+        .from("sales_orders")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["new", "confirmed"]),
+      supabase.from("products").select("*", { count: "exact", head: true }),
+      getLowStockCount(),
+    ]);
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">Dashboard</h1>
+      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Active Products" value={productCount ?? 0} icon={Package} />
-        <StatCard label="Open Orders" value={newOrders ?? 0} icon={ShoppingCart} />
-        <StatCard label="Catalog Size" value={lowStock ?? 0} icon={Warehouse} />
-        <StatCard label="Needs Attention" value="—" icon={FileWarning} />
+        <StatCard label={t("stats.activeProducts")} value={productCount ?? 0} icon={Package} />
+        <StatCard label={t("stats.openOrders")} value={newOrders ?? 0} icon={ShoppingCart} />
+        <StatCard label={t("stats.catalogSize")} value={catalogSize ?? 0} icon={Warehouse} />
+        <StatCard label={t("stats.needsAttention")} value={needsAttention} icon={FileWarning} />
       </div>
-      <p className="mt-8 text-sm text-muted">
-        Use the sidebar to manage products, categories, orders, inventory, purchases, and
-        accounting.
-      </p>
+      <p className="mt-8 text-sm text-muted">{t("subtitle")}</p>
     </div>
   );
 }

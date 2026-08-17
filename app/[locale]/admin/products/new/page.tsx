@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { getAllCategoriesFlat } from "@/lib/data/categories";
 import { getAllProductsAdmin } from "@/lib/data/products";
 import { ProductForm } from "@/components/admin/product-form";
@@ -9,10 +10,11 @@ export default async function NewProductPage() {
     getAllCategoriesFlat(),
     getAllProductsAdmin(),
   ]);
+  const t = await getTranslations("admin.products");
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">New Product</h1>
+      <h1 className="text-2xl font-extrabold">{t("newTitle")}</h1>
       <div className="mt-6">
         <ProductForm categories={categories} allProducts={allProducts} />
       </div>

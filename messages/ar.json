@@ -208,6 +208,290 @@
       "accounting": "الحسابات",
       "settings": "الإعدادات",
       "staff": "الموظفين"
+    },
+    "common": {
+      "selectPlaceholder": "— اختر —",
+      "noneOption": "— بدون —"
+    },
+    "dashboard": {
+      "title": "لوحة التحكم",
+      "subtitle": "استخدم القائمة الجانبية لإدارة المنتجات والأقسام والطلبات والمخزون والمشتريات والحسابات.",
+      "stats": {
+        "activeProducts": "المنتجات النشطة",
+        "openOrders": "الطلبات المفتوحة",
+        "catalogSize": "حجم الكتالوج",
+        "needsAttention": "يحتاج انتباه"
+      }
+    },
+    "products": {
+      "title": "المنتجات",
+      "addProduct": "إضافة منتج",
+      "newTitle": "منتج جديد",
+      "editTitle": "تعديل المنتج",
+      "table": {
+        "product": "المنتج",
+        "type": "النوع",
+        "category": "القسم",
+        "price": "السعر",
+        "status": "الحالة"
+      },
+      "status": {
+        "active": "نشط",
+        "hidden": "مخفي"
+      },
+      "deleteConfirm": "هل تريد حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء.",
+      "toastDeleted": "تم حذف المنتج",
+      "toastCreated": "تم إنشاء المنتج",
+      "toastUpdated": "تم تحديث المنتج",
+      "imageUpload": {
+        "uploading": "جاري الرفع...",
+        "upload": "رفع",
+        "productImage": "صورة المنتج",
+        "variantImage": "صورة الخيار",
+        "uploadFailed": "فشل الرفع"
+      },
+      "form": {
+        "nameEn": "الاسم (إنجليزي)",
+        "nameAr": "الاسم (عربي)",
+        "slug": "الرابط المختصر",
+        "category": "القسم",
+        "newCategory": "+ جديد",
+        "type": "النوع",
+        "typeSimple": "بسيط",
+        "typeCombo": "باقة / تجميعة",
+        "typeCustomRequest": "طلب مخصص (يتم توجيهه إلى الطلبات الخاصة)",
+        "pricingUnit": "وحدة التسعير",
+        "pricingUnitItem": "لكل قطعة",
+        "pricingUnitPage": "لكل صفحة",
+        "pricingUnitJob": "لكل عمل",
+        "price": "السعر (جنيه)",
+        "lowStockThreshold": "حد المخزون المنخفض",
+        "shortDescriptionEn": "وصف مختصر (إنجليزي)",
+        "shortDescriptionAr": "وصف مختصر (عربي)",
+        "descriptionEn": "الوصف الكامل (إنجليزي)",
+        "descriptionAr": "الوصف الكامل (عربي)",
+        "active": "نشط (ظاهر في المتجر)",
+        "forceAvailable": "توفير إجباري (تجاهل مخزون المكونات)",
+        "variants": "الخيارات",
+        "variantNameEn": "الاسم (إنجليزي)",
+        "variantNameAr": "الاسم (عربي)",
+        "sku": "رمز المنتج (SKU)",
+        "priceOverride": "سعر مخصص",
+        "color": "اللون",
+        "removeVariant": "حذف الخيار",
+        "addVariant": "إضافة خيار",
+        "bundleComponents": "مكونات الباقة",
+        "componentProduct": "المنتج",
+        "componentVariant": "الخيار",
+        "anyNoneOption": "— أي / بدون —",
+        "qty": "الكمية",
+        "addComponent": "إضافة مكون",
+        "saving": "جاري الحفظ...",
+        "saveChanges": "حفظ التغييرات",
+        "createProduct": "إنشاء المنتج"
+      }
+    },
+    "categories": {
+      "title": "الأقسام",
+      "subtitle": "إدارة الأقسام الرئيسية والأقسام الفرعية التابعة لها.",
+      "addCategory": "إضافة قسم",
+      "deleteConfirm": "هل تريد حذف هذا القسم؟ ستصبح المنتجات التابعة له بدون قسم.",
+      "toastDeleted": "تم حذف القسم",
+      "toastCreated": "تم إنشاء القسم",
+      "toastUpdated": "تم تحديث القسم",
+      "form": {
+        "nameEn": "الاسم (إنجليزي)",
+        "nameAr": "الاسم (عربي)",
+        "slug": "الرابط المختصر",
+        "parent": "القسم الرئيسي",
+        "topLevelOption": "— قسم رئيسي —"
+      }
+    },
+    "orders": {
+      "title": "الطلبات",
+      "subtitle": "يتم التحديث فورًا مع إتمام العملاء للطلب.",
+      "empty": "لا توجد طلبات حتى الآن.",
+      "itemCount": "{count, plural, one {# قطعة} other {# قطع}}",
+      "toastUpdated": "تم تحديث الطلب",
+      "actions": {
+        "confirming": "جاري التأكيد...",
+        "confirmOrder": "تأكيد الطلب",
+        "completing": "جاري الإكمال...",
+        "markDone": "تحديد كمكتمل",
+        "cancelling": "جاري الإلغاء..."
+      },
+      "screenshot": {
+        "view": "عرض إيصال الدفع",
+        "open": "فتح الإيصال"
+      },
+      "detail": {
+        "customer": "العميل",
+        "fulfillment": "طريقة الاستلام",
+        "payment": "الدفع",
+        "invoice": "الفاتورة",
+        "notGenerated": "لم يتم إنشاؤها بعد",
+        "items": "العناصر",
+        "cogs": "تكلفة البضاعة",
+        "subtotal": "الإجمالي الفرعي"
+      }
+    },
+    "requests": {
+      "title": "الطلبات الخاصة",
+      "subtitle": "طلبات مخصصة وطلبات بالجملة وأعمال خاصة.",
+      "empty": "لا توجد طلبات خاصة حتى الآن.",
+      "toastUpdated": "تم تحديث الطلب",
+      "attachment": {
+        "view": "عرض المرفق",
+        "open": "فتح المرفق"
+      },
+      "detail": {
+        "contact": "بيانات التواصل",
+        "customerAccount": "حساب العميل",
+        "category": "القسم",
+        "qtyBudget": "الكمية / الميزانية",
+        "fulfillment": "طريقة الاستلام",
+        "description": "الوصف",
+        "updateStatus": "تحديث الحالة"
+      },
+      "form": {
+        "status": "الحالة",
+        "adminNotes": "ملاحظات الإدارة",
+        "saving": "جاري الحفظ..."
+      }
+    },
+    "inventory": {
+      "title": "المخزون",
+      "subtitle": "المتاح = الموجود بالمخزن ناقص المحجوز (الطلبات المفتوحة)، وهو ما يمكن بيعه فعليًا.",
+      "table": {
+        "product": "المنتج",
+        "onHand": "الموجود",
+        "reserved": "المحجوز",
+        "available": "المتاح",
+        "reason": "السبب",
+        "qty": "الكمية",
+        "date": "التاريخ"
+      },
+      "recentMovements": "آخر الحركات",
+      "reasons": {
+        "adjustment": "تسوية",
+        "damaged": "تالف",
+        "purchase": "شراء",
+        "sale": "بيع"
+      },
+      "adjust": "تعديل",
+      "adjustDialogTitle": "تعديل المخزون — {label}",
+      "toastAdjusted": "تم تعديل المخزون",
+      "form": {
+        "direction": "الاتجاه",
+        "directionIn": "إضافة (مخزون تم إيجاده)",
+        "directionOut": "خصم (إزالة من المخزون)",
+        "quantity": "الكمية",
+        "reason": "السبب",
+        "reasonAdjustment": "تسوية / جرد المخزون",
+        "reasonDamaged": "تالف",
+        "notes": "ملاحظات",
+        "saving": "جاري الحفظ...",
+        "saveAdjustment": "حفظ التعديل"
+      }
+    },
+    "purchases": {
+      "title": "المشتريات",
+      "newOrder": "أمر شراء جديد",
+      "newTitle": "أمر شراء جديد",
+      "empty": "لا توجد أوامر شراء حتى الآن.",
+      "itemCount": "{count, plural, one {# قطعة} other {# قطع}}",
+      "status": {
+        "draft": "مسودة",
+        "ordered": "تم الطلب",
+        "received": "تم الاستلام"
+      },
+      "toastCreated": "تم إنشاء أمر الشراء",
+      "toastMarkedOrdered": "تم تحديده كمطلوب",
+      "toastReceived": "تم استلام أمر الشراء — تم تحديث المخزون",
+      "receiveConfirm": "هل تريد استلام هذا الأمر؟ سيتم إنشاء دفعات مخزون بتكلفة الوحدة المسجلة.",
+      "actions": {
+        "markOrdered": "تحديد كمطلوب",
+        "receive": "استلام"
+      },
+      "detail": {
+        "items": "العناصر",
+        "receivedQty": "تم استلام {qty}",
+        "totalCost": "إجمالي التكلفة",
+        "notes": "ملاحظات"
+      },
+      "form": {
+        "supplier": "المورد",
+        "newSupplier": "+ مورد جديد",
+        "notes": "ملاحظات",
+        "lineItems": "عناصر الأمر",
+        "product": "المنتج",
+        "variant": "الخيار",
+        "qty": "الكمية",
+        "unitCost": "تكلفة الوحدة",
+        "addItem": "إضافة عنصر",
+        "creating": "جاري الإنشاء...",
+        "createOrder": "إنشاء أمر الشراء"
+      },
+      "supplierForm": {
+        "name": "الاسم",
+        "phone": "الهاتف",
+        "email": "البريد الإلكتروني",
+        "addSupplier": "إضافة مورد"
+      },
+      "toastSupplierAdded": "تم إضافة المورد"
+    },
+    "accounting": {
+      "title": "الحسابات",
+      "from": "من",
+      "to": "إلى",
+      "apply": "تطبيق",
+      "stats": {
+        "revenue": "الإيرادات",
+        "cogs": "تكلفة البضاعة",
+        "grossProfit": "إجمالي الربح",
+        "expenses": "المصروفات",
+        "netProfit": "صافي الربح"
+      },
+      "topSellingProducts": "الأكثر مبيعًا",
+      "table": {
+        "product": "المنتج",
+        "qtySold": "الكمية المباعة",
+        "revenue": "الإيرادات",
+        "margin": "هامش الربح"
+      },
+      "noSales": "لا توجد مبيعات مكتملة في هذه الفترة.",
+      "lowStock": "مخزون منخفض",
+      "lowStockTable": {
+        "product": "المنتج",
+        "available": "المتاح",
+        "threshold": "الحد الأدنى"
+      },
+      "invoices": "الفواتير",
+      "bills": "الفواتير (المشتريات)",
+      "noBills": "لا توجد فواتير مسجلة حتى الآن.",
+      "ledger": "دفتر الأستاذ",
+      "ledgerTable": {
+        "date": "التاريخ",
+        "type": "النوع",
+        "description": "الوصف",
+        "amount": "المبلغ"
+      },
+      "invoiceStatus": {
+        "paid": "مدفوعة",
+        "pending": "قيد الانتظار"
+      },
+      "ledgerType": {
+        "revenue": "إيرادات",
+        "cogs": "تكلفة البضاعة",
+        "expense": "مصروفات"
+      }
+    },
+    "settings": {
+      "title": "الإعدادات",
+      "deliveryFee": "رسوم التوصيل",
+      "deliveryFeeLabel": "رسوم التوصيل (جنيه)",
+      "saving": "جاري الحفظ...",
+      "toastUpdated": "تم تحديث رسوم التوصيل"
     }
   }
 }

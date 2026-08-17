@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { toast } from "sonner";
 import { X, Wrench } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { adjustStockAction } from "@/lib/actions/inventory";
 
@@ -19,6 +20,7 @@ type Props = {
 export function StockAdjustDialog({ productId, variantId, label }: Props) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const t = useTranslations("admin.inventory");
 
   return (
     <>
@@ -27,14 +29,14 @@ export function StockAdjustDialog({ productId, variantId, label }: Props) {
         className="inline-flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-xs font-bold hover:border-primary"
       >
         <Wrench className="h-3.5 w-3.5" />
-        Adjust
+        {t("adjust")}
       </button>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="font-bold">Adjust stock — {label}</h3>
+              <h3 className="font-bold">{t("adjustDialogTitle", { label })}</h3>
               <button onClick={() => setOpen(false)} className="rounded-lg p-1 hover:bg-foreground/5">
                 <X className="h-4 w-4" />
               </button>
@@ -54,7 +56,7 @@ export function StockAdjustDialog({ productId, variantId, label }: Props) {
                 if (result.error) {
                   toast.error(result.error);
                 } else {
-                  toast.success("Stock adjusted");
+                  toast.success(t("toastAdjusted"));
                   setOpen(false);
                   router.refresh();
                 }
@@ -64,25 +66,25 @@ export function StockAdjustDialog({ productId, variantId, label }: Props) {
               {({ isSubmitting }) => (
                 <Form className="flex flex-col gap-3">
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-muted">Direction</label>
+                    <label className="mb-1 block text-xs font-semibold text-muted">{t("form.direction")}</label>
                     <Field as="select" name="direction" className={inputClass}>
-                      <option value="in">In (found stock)</option>
-                      <option value="out">Out (remove stock)</option>
+                      <option value="in">{t("form.directionIn")}</option>
+                      <option value="out">{t("form.directionOut")}</option>
                     </Field>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-muted">Quantity</label>
+                    <label className="mb-1 block text-xs font-semibold text-muted">{t("form.quantity")}</label>
                     <Field type="number" min={1} name="qty" className={inputClass} />
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-muted">Reason</label>
+                    <label className="mb-1 block text-xs font-semibold text-muted">{t("form.reason")}</label>
                     <Field as="select" name="reason" className={inputClass}>
-                      <option value="adjustment">Adjustment / stock count</option>
-                      <option value="damaged">Damaged</option>
+                      <option value="adjustment">{t("form.reasonAdjustment")}</option>
+                      <option value="damaged">{t("form.reasonDamaged")}</option>
                     </Field>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-semibold text-muted">Notes</label>
+                    <label className="mb-1 block text-xs font-semibold text-muted">{t("form.notes")}</label>
                     <Field as="textarea" rows={2} name="notes" className={inputClass} />
                   </div>
                   <button
@@ -90,7 +92,7 @@ export function StockAdjustDialog({ productId, variantId, label }: Props) {
                     disabled={isSubmitting}
                     className="mt-1 rounded-full bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
                   >
-                    {isSubmitting ? "Saving..." : "Save adjustment"}
+                    {isSubmitting ? t("form.saving") : t("form.saveAdjustment")}
                   </button>
                 </Form>
               )}

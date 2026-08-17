@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
@@ -16,6 +17,18 @@ const STATUS_COLORS: Record<string, string> = {
   cancelled: "bg-danger/10 text-danger",
 };
 
+const FULFILLMENT_KEY: Record<string, "pickup" | "delivery"> = {
+  pickup: "pickup",
+  delivery: "delivery",
+};
+
+const PAYMENT_METHOD_KEY: Record<string, "cash" | "instapay" | "vodafoneCash" | "otherWallet"> = {
+  cash: "cash",
+  instapay: "instapay",
+  vodafone_cash: "vodafoneCash",
+  other_wallet: "otherWallet",
+};
+
 type Order = Tables<"sales_orders"> & {
   invoice: Tables<"invoices"> | null;
   items: Tables<"sales_order_items">[];
@@ -23,6 +36,9 @@ type Order = Tables<"sales_orders"> & {
 
 export function OrdersRealtimeList({ orders }: { orders: Order[] }) {
   const router = useRouter();
+  const t = useTranslations("admin.orders");
+  const tStatus = useTranslations("account.orderStatus");
+  const tCheckout = useTranslations("checkout");
 
   useEffect(() => {
     const supabase = createClient();
@@ -42,46 +58,51 @@ export function OrdersRealtimeList({ orders }: { orders: Order[] }) {
   }, []);
 
   if (orders.length === 0) {
-    return <p className="py-16 text-center text-muted">No orders yet.</p>;
+    return <p className="py-16 text-center text-muted">{t("empty")}</p>;
   }
 
   return (
     <div className="flex flex-col gap-3">
-      {orders.map((order) => (
-        <motion.div
-          key={order.id}
-          layout
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          transition={{ duration: 0.3 }}
-        >
-          <Link
-            href={`/admin/orders/${order.id}`}
-            className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary"
+      {orders.map((order) => {
+        const fulfillmentKey = FULFILLMENT_KEY[order.fulfillment_method];
+        const fulfillmentLabel = fulfillmentKey ? tCheckout(fulfillmentKey) : order.fulfillment_method;
+        const paymentKey = PAYMENT_METHOD_KEY[order.payment_method];
+        const paymentLabel = paymentKey ? tCheckout(paymentKey) : order.payment_method;
+        return (
+          <motion.div
+            key={order.id}
+            layout
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            transition={{ duration: 0.3 }}
           >
-            <div>
-              <p className="font-bold">{order.order_number}</p>
-              <p className="text-xs text-muted">
-                {order.items.length} item{order.items.length !== 1 ? "s" : ""} ·{" "}
-                {order.fulfillment_method} · {order.payment_method}
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-extrabold text-primary">
-                {formatEGP(order.total, "en")}
-              </span>
-              <span
-                className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
-                  STATUS_COLORS[order.status] ?? ""
-                }`}
-              >
-                {order.status}
-              </span>
-            </div>
-          </Link>
-        </motion.div>
-      ))}
+            <Link
+              href={`/admin/orders/${order.id}`}
+              className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary"
+            >
+              <div>
+                <p className="font-bold">{order.order_number}</p>
+                <p className="text-xs text-muted">
+                  {t("itemCount", { count: order.items.length })} · {fulfillmentLabel} · {paymentLabel}
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-extrabold text-primary">
+                  {formatEGP(order.total, "en")}
+                </span>
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
+                    STATUS_COLORS[order.status] ?? ""
+                  }`}
+                >
+                  {tStatus(order.status as "new")}
+                </span>
+              </div>
+            </Link>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

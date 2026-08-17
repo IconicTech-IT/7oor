@@ -61,9 +61,10 @@ this build closes off, see §5). Bootstrap your first admin manually:
    ```
 
 3. Log in again (or refresh) — the account now has an **Admin** link in the header
-   menu and can reach `/admin`. From there, use `/admin` (no dedicated staff-management
-   UI yet — promote additional `staff` accounts the same way, or extend
-   `lib/actions/*` with an admin-only "set role" action).
+   menu and can reach `/admin`. From there, go to **Admin → Staff** (`/admin/staff`,
+   admin-only) to promote every account after this first one — no more raw SQL needed.
+   Role changes go through the `set_user_role()` RPC, which re-checks admin-only and
+   rejects self-role-change server-side.
 
 ## 4. Deploying to Vercel
 

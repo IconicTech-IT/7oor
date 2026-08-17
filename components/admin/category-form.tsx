@@ -2,6 +2,7 @@
 
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { categorySchema } from "@/lib/validators/category";
 import { createCategoryAction, updateCategoryAction, type ActionResult } from "@/lib/actions/categories";
 import type { Category } from "@/lib/types";
@@ -25,6 +26,8 @@ type Props = {
 
 export function CategoryForm({ topLevelCategories, initial, onDone }: Props) {
   const isEdit = Boolean(initial);
+  const t = useTranslations("admin.categories");
+  const tCommon = useTranslations("common");
 
   return (
     <Formik
@@ -43,7 +46,7 @@ export function CategoryForm({ topLevelCategories, initial, onDone }: Props) {
         if (result.error) {
           toast.error(result.error);
         } else {
-          toast.success(isEdit ? "Category updated" : "Category created");
+          toast.success(isEdit ? t("toastUpdated") : t("toastCreated"));
           resetForm();
           onDone?.(result.id);
         }
@@ -53,7 +56,7 @@ export function CategoryForm({ topLevelCategories, initial, onDone }: Props) {
       {({ setFieldValue, isSubmitting }) => (
         <Form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-muted">Name (EN)</label>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("form.nameEn")}</label>
             <Field
               name="nameEn"
               className={inputClass}
@@ -65,19 +68,19 @@ export function CategoryForm({ topLevelCategories, initial, onDone }: Props) {
             <ErrorMessage name="nameEn" component="p" className="mt-1 text-xs text-danger" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-muted">Name (AR)</label>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("form.nameAr")}</label>
             <Field name="nameAr" dir="rtl" className={inputClass} />
             <ErrorMessage name="nameAr" component="p" className="mt-1 text-xs text-danger" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-muted">Slug</label>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("form.slug")}</label>
             <Field name="slug" dir="ltr" className={inputClass} />
             <ErrorMessage name="slug" component="p" className="mt-1 text-xs text-danger" />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-muted">Parent</label>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("form.parent")}</label>
             <Field as="select" name="parentId" className={inputClass}>
-              <option value="">— Top level —</option>
+              <option value="">{t("form.topLevelOption")}</option>
               {topLevelCategories
                 .filter((c) => c.id !== initial?.id)
                 .map((c) => (
@@ -93,7 +96,7 @@ export function CategoryForm({ topLevelCategories, initial, onDone }: Props) {
               disabled={isSubmitting}
               className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
             >
-              {isEdit ? "Save" : "Add"}
+              {isEdit ? tCommon("save") : tCommon("add")}
             </button>
             {isEdit && (
               <button
@@ -101,7 +104,7 @@ export function CategoryForm({ topLevelCategories, initial, onDone }: Props) {
                 onClick={() => onDone?.()}
                 className="rounded-lg border border-border px-4 py-2 text-sm font-semibold"
               >
-                Cancel
+                {tCommon("cancel")}
               </button>
             )}
           </div>

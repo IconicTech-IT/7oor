@@ -2,6 +2,7 @@
 
 import { Formik, Form, Field } from "formik";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import {
   updateRequestStatusSchema,
@@ -23,6 +24,9 @@ export function RequestStatusForm({
   adminNotes: string | null;
 }) {
   const router = useRouter();
+  const t = useTranslations("admin.requests");
+  const tStatus = useTranslations("requests.status");
+  const tCommon = useTranslations("common");
 
   return (
     <Formik<UpdateRequestStatusValues>
@@ -32,7 +36,7 @@ export function RequestStatusForm({
         const result = await updateRequestStatusAction(requestId, values);
         if (result.error) toast.error(result.error);
         else {
-          toast.success("Request updated");
+          toast.success(t("toastUpdated"));
           router.refresh();
         }
         setSubmitting(false);
@@ -41,17 +45,17 @@ export function RequestStatusForm({
       {({ isSubmitting }) => (
         <Form className="flex flex-col gap-3">
           <div>
-            <label className="mb-1 block text-xs font-semibold text-muted">Status</label>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("form.status")}</label>
             <Field as="select" name="status" className={inputClass}>
               {REQUEST_STATUSES.map((s) => (
                 <option key={s} value={s}>
-                  {s.replace("_", " ")}
+                  {tStatus(s)}
                 </option>
               ))}
             </Field>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-semibold text-muted">Admin notes</label>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("form.adminNotes")}</label>
             <Field as="textarea" rows={3} name="adminNotes" className={inputClass} />
           </div>
           <button
@@ -59,7 +63,7 @@ export function RequestStatusForm({
             disabled={isSubmitting}
             className="w-fit rounded-full bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
           >
-            {isSubmitting ? "Saving..." : "Save"}
+            {isSubmitting ? t("form.saving") : tCommon("save")}
           </button>
         </Form>
       )}

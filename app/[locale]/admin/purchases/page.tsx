@@ -1,4 +1,5 @@
 import { Plus } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getAllPurchaseOrders } from "@/lib/data/purchases";
 import { formatEGP } from "@/lib/currency";
@@ -13,22 +14,23 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default async function AdminPurchasesPage() {
   const orders = await getAllPurchaseOrders();
+  const t = await getTranslations("admin.purchases");
 
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold">Purchases</h1>
+        <h1 className="text-2xl font-extrabold">{t("title")}</h1>
         <Link
           href="/admin/purchases/new"
           className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover"
         >
           <Plus className="h-4 w-4" />
-          New purchase order
+          {t("newOrder")}
         </Link>
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
-        {orders.length === 0 && <p className="py-16 text-center text-muted">No purchase orders yet.</p>}
+        {orders.length === 0 && <p className="py-16 text-center text-muted">{t("empty")}</p>}
         {orders.map((po) => {
           const total = po.items.reduce((sum, i) => sum + i.qty_ordered * i.unit_cost, 0);
           return (
@@ -40,7 +42,7 @@ export default async function AdminPurchasesPage() {
               <div>
                 <p className="font-bold">{po.po_number}</p>
                 <p className="text-xs text-muted">
-                  {po.supplier?.name ?? "—"} · {po.items.length} item{po.items.length !== 1 ? "s" : ""}
+                  {po.supplier?.name ?? "—"} · {t("itemCount", { count: po.items.length })}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -50,7 +52,7 @@ export default async function AdminPurchasesPage() {
                     STATUS_COLORS[po.status] ?? ""
                   }`}
                 >
-                  {po.status}
+                  {t.has(`status.${po.status}`) ? t(`status.${po.status}` as "status.draft") : po.status}
                 </span>
               </div>
             </Link>

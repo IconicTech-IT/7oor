@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { Paperclip, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { getRequestAttachmentUrlAction } from "@/lib/actions/admin-requests";
 
 export function RequestAttachmentViewer({ path }: { path: string }) {
   const [url, setUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const t = useTranslations("admin.requests.attachment");
 
   async function handleView() {
     setLoading(true);
@@ -23,7 +25,7 @@ export function RequestAttachmentViewer({ path }: { path: string }) {
         className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline"
       >
         <Paperclip className="h-4 w-4" />
-        Open attachment
+        {t("open")}
       </a>
     );
   }
@@ -35,7 +37,7 @@ export function RequestAttachmentViewer({ path }: { path: string }) {
       className="inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline disabled:opacity-60"
     >
       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Paperclip className="h-4 w-4" />}
-      View attachment
+      {t("view")}
     </button>
   );
 }

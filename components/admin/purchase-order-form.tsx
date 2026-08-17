@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Formik, Form, Field, FieldArray, ErrorMessage } from "formik";
 import { Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { purchaseOrderSchema } from "@/lib/validators/purchase";
 import { createPurchaseOrderAction } from "@/lib/actions/purchases";
@@ -22,6 +23,8 @@ type Props = {
 export function PurchaseOrderForm({ suppliers, products }: Props) {
   const router = useRouter();
   const [showNewSupplier, setShowNewSupplier] = useState(false);
+  const t = useTranslations("admin.purchases");
+  const tCommon = useTranslations("admin.common");
 
   return (
     <Formik
@@ -38,7 +41,7 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
           setSubmitting(false);
           return;
         }
-        toast.success("Purchase order created");
+        toast.success(t("toastCreated"));
         router.push(`/admin/purchases/${result.id}`);
       }}
     >
@@ -46,17 +49,17 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
         <Form className="flex flex-col gap-6">
           <section className="rounded-2xl border border-border bg-card p-5">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-muted">Supplier</label>
+              <label className="text-xs font-semibold text-muted">{t("form.supplier")}</label>
               <button
                 type="button"
                 onClick={() => setShowNewSupplier((v) => !v)}
                 className="text-xs font-bold text-primary hover:underline"
               >
-                + New supplier
+                {t("form.newSupplier")}
               </button>
             </div>
             <Field as="select" name="supplierId" className={`mt-1 ${inputClass}`}>
-              <option value="">— Select —</option>
+              <option value="">{tCommon("selectPlaceholder")}</option>
               {suppliers.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
@@ -76,12 +79,12 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
               </div>
             )}
 
-            <label className="mb-1 mt-4 block text-xs font-semibold text-muted">Notes</label>
+            <label className="mb-1 mt-4 block text-xs font-semibold text-muted">{t("form.notes")}</label>
             <Field as="textarea" rows={2} name="notes" className={inputClass} />
           </section>
 
           <section className="rounded-2xl border border-border bg-card p-5">
-            <h2 className="mb-4 text-sm font-bold">Line items</h2>
+            <h2 className="mb-4 text-sm font-bold">{t("form.lineItems")}</h2>
             <FieldArray name="items">
               {({ push, remove }) => (
                 <div className="flex flex-col gap-3">
@@ -90,9 +93,9 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
                     return (
                       <div key={i} className="grid gap-3 rounded-xl border border-border p-4 sm:grid-cols-8">
                         <div className="sm:col-span-3">
-                          <label className="mb-1 block text-xs font-semibold text-muted">Product</label>
+                          <label className="mb-1 block text-xs font-semibold text-muted">{t("form.product")}</label>
                           <Field as="select" name={`items.${i}.productId`} className={inputClass}>
-                            <option value="">— Select —</option>
+                            <option value="">{tCommon("selectPlaceholder")}</option>
                             {products.map((p) => (
                               <option key={p.id} value={p.id}>
                                 {p.name_en}
@@ -101,9 +104,9 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
                           </Field>
                         </div>
                         <div className="sm:col-span-2">
-                          <label className="mb-1 block text-xs font-semibold text-muted">Variant</label>
+                          <label className="mb-1 block text-xs font-semibold text-muted">{t("form.variant")}</label>
                           <Field as="select" name={`items.${i}.variantId`} className={inputClass}>
-                            <option value="">— None —</option>
+                            <option value="">{tCommon("noneOption")}</option>
                             {product?.variants.map((v) => (
                               <option key={v.id} value={v.id}>
                                 {v.name_en}
@@ -112,11 +115,11 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
                           </Field>
                         </div>
                         <div>
-                          <label className="mb-1 block text-xs font-semibold text-muted">Qty</label>
+                          <label className="mb-1 block text-xs font-semibold text-muted">{t("form.qty")}</label>
                           <Field type="number" min={1} name={`items.${i}.qtyOrdered`} className={inputClass} />
                         </div>
                         <div>
-                          <label className="mb-1 block text-xs font-semibold text-muted">Unit cost</label>
+                          <label className="mb-1 block text-xs font-semibold text-muted">{t("form.unitCost")}</label>
                           <Field
                             type="number"
                             step="0.01"
@@ -142,7 +145,7 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
                     onClick={() => push({ productId: "", variantId: "", qtyOrdered: 1, unitCost: 0 })}
                     className="inline-flex w-fit items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-bold hover:border-primary"
                   >
-                    <Plus className="h-3.5 w-3.5" /> Add item
+                    <Plus className="h-3.5 w-3.5" /> {t("form.addItem")}
                   </button>
                 </div>
               )}
@@ -154,7 +157,7 @@ export function PurchaseOrderForm({ suppliers, products }: Props) {
             disabled={isSubmitting}
             className="w-fit rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
           >
-            {isSubmitting ? "Creating..." : "Create purchase order"}
+            {isSubmitting ? t("form.creating") : t("form.createOrder")}
           </button>
         </Form>
       )}

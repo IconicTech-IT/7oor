@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
 import {
   getInvoices,
   getBills,
@@ -42,6 +43,8 @@ export default async function AdminAccountingPage({
   const sp = await searchParams;
   const from = sp.from || startOfMonth();
   const to = sp.to || today();
+  const t = await getTranslations("admin.accounting");
+  const locale = await getLocale();
 
   const [summary, topProducts, invoices, bills, ledger, inventory] = await Promise.all([
     getReportSummary(from, `${to}T23:59:59`),
@@ -56,11 +59,11 @@ export default async function AdminAccountingPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">Accounting</h1>
+      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
 
       <form className="mt-4 flex flex-wrap items-end gap-3">
         <div>
-          <label className="mb-1 block text-xs font-semibold text-muted">From</label>
+          <label className="mb-1 block text-xs font-semibold text-muted">{t("from")}</label>
           <input
             type="date"
             name="from"
@@ -69,7 +72,7 @@ export default async function AdminAccountingPage({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-semibold text-muted">To</label>
+          <label className="mb-1 block text-xs font-semibold text-muted">{t("to")}</label>
           <input
             type="date"
             name="to"
@@ -81,38 +84,38 @@ export default async function AdminAccountingPage({
           type="submit"
           className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover"
         >
-          Apply
+          {t("apply")}
         </button>
       </form>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-5">
-        <StatCard label="Revenue" value={formatEGP(summary.revenue, "en")} />
-        <StatCard label="COGS" value={formatEGP(summary.cogs, "en")} />
-        <StatCard label="Gross Profit" value={formatEGP(summary.grossProfit, "en")} tone="success" />
-        <StatCard label="Expenses" value={formatEGP(summary.expenses, "en")} />
+        <StatCard label={t("stats.revenue")} value={formatEGP(summary.revenue, "en")} />
+        <StatCard label={t("stats.cogs")} value={formatEGP(summary.cogs, "en")} />
+        <StatCard label={t("stats.grossProfit")} value={formatEGP(summary.grossProfit, "en")} tone="success" />
+        <StatCard label={t("stats.expenses")} value={formatEGP(summary.expenses, "en")} />
         <StatCard
-          label="Net Profit"
+          label={t("stats.netProfit")}
           value={formatEGP(summary.netProfit, "en")}
           tone={summary.netProfit >= 0 ? "success" : "danger"}
         />
       </div>
 
-      <h2 className="mt-10 text-lg font-bold">Top selling products</h2>
+      <h2 className="mt-10 text-lg font-bold">{t("topSellingProducts")}</h2>
       <div className="mt-4 overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-bold uppercase text-muted">
-              <th className="px-4 py-3 text-start">Product</th>
-              <th className="px-4 py-3 text-end">Qty sold</th>
-              <th className="px-4 py-3 text-end">Revenue</th>
-              <th className="px-4 py-3 text-end">Margin</th>
+              <th className="px-4 py-3 text-start">{t("table.product")}</th>
+              <th className="px-4 py-3 text-end">{t("table.qtySold")}</th>
+              <th className="px-4 py-3 text-end">{t("table.revenue")}</th>
+              <th className="px-4 py-3 text-end">{t("table.margin")}</th>
             </tr>
           </thead>
           <tbody>
             {topProducts.length === 0 && (
               <tr>
                 <td colSpan={4} className="px-4 py-6 text-center text-muted">
-                  No completed sales in this range.
+                  {t("noSales")}
                 </td>
               </tr>
             )}
@@ -133,23 +136,28 @@ export default async function AdminAccountingPage({
       {lowStock.length > 0 && (
         <>
           <h2 className="mt-10 flex items-center gap-2 text-lg font-bold">
-            <AlertTriangle className="h-5 w-5 text-danger" /> Low stock
+            <AlertTriangle className="h-5 w-5 text-danger" /> {t("lowStock")}
           </h2>
           <div className="mt-4 overflow-x-auto rounded-2xl border border-border bg-card">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-xs font-bold uppercase text-muted">
-                  <th className="px-4 py-3 text-start">Product</th>
-                  <th className="px-4 py-3 text-end">Available</th>
-                  <th className="px-4 py-3 text-end">Threshold</th>
+                  <th className="px-4 py-3 text-start">{t("lowStockTable.product")}</th>
+                  <th className="px-4 py-3 text-end">{t("lowStockTable.available")}</th>
+                  <th className="px-4 py-3 text-end">{t("lowStockTable.threshold")}</th>
                 </tr>
               </thead>
               <tbody>
                 {lowStock.map((row) => (
                   <tr key={`${row.productId}:${row.variantId ?? ""}`} className="border-b border-border last:border-0">
                     <td className="px-4 py-3">
-                      {row.productNameEn}
-                      {row.variantNameEn && <span className="text-muted"> — {row.variantNameEn}</span>}
+                      {locale === "ar" ? row.productNameAr : row.productNameEn}
+                      {row.variantNameEn && (
+                        <span className="text-muted">
+                          {" "}
+                          — {locale === "ar" ? row.variantNameAr : row.variantNameEn}
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 text-end font-bold text-danger">{row.available}</td>
                     <td className="px-4 py-3 text-end text-muted">{row.lowStockThreshold}</td>
@@ -163,7 +171,7 @@ export default async function AdminAccountingPage({
 
       <div className="mt-10 grid gap-8 lg:grid-cols-2">
         <div>
-          <h2 className="text-lg font-bold">Invoices</h2>
+          <h2 className="text-lg font-bold">{t("invoices")}</h2>
           <div className="mt-4 flex flex-col gap-2">
             {invoices.slice(0, 15).map((inv) => (
               <div
@@ -181,7 +189,9 @@ export default async function AdminAccountingPage({
                       inv.status === "paid" ? "text-success" : "text-warning"
                     }`}
                   >
-                    {inv.status}
+                    {t.has(`invoiceStatus.${inv.status}`)
+                      ? t(`invoiceStatus.${inv.status}` as "invoiceStatus.paid")
+                      : inv.status}
                   </p>
                 </div>
               </div>
@@ -190,7 +200,7 @@ export default async function AdminAccountingPage({
         </div>
 
         <div>
-          <h2 className="text-lg font-bold">Bills (purchases)</h2>
+          <h2 className="text-lg font-bold">{t("bills")}</h2>
           <div className="mt-4 flex flex-col gap-2">
             {bills.slice(0, 15).map((bill) => (
               <div
@@ -201,20 +211,20 @@ export default async function AdminAccountingPage({
                 <p className="font-bold text-danger">-{formatEGP(bill.amount, "en")}</p>
               </div>
             ))}
-            {bills.length === 0 && <p className="text-sm text-muted">No bills recorded yet.</p>}
+            {bills.length === 0 && <p className="text-sm text-muted">{t("noBills")}</p>}
           </div>
         </div>
       </div>
 
-      <h2 className="mt-10 text-lg font-bold">Ledger</h2>
+      <h2 className="mt-10 text-lg font-bold">{t("ledger")}</h2>
       <div className="mt-4 overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-bold uppercase text-muted">
-              <th className="px-4 py-3 text-start">Date</th>
-              <th className="px-4 py-3 text-start">Type</th>
-              <th className="px-4 py-3 text-start">Description</th>
-              <th className="px-4 py-3 text-end">Amount</th>
+              <th className="px-4 py-3 text-start">{t("ledgerTable.date")}</th>
+              <th className="px-4 py-3 text-start">{t("ledgerTable.type")}</th>
+              <th className="px-4 py-3 text-start">{t("ledgerTable.description")}</th>
+              <th className="px-4 py-3 text-end">{t("ledgerTable.amount")}</th>
             </tr>
           </thead>
           <tbody>
@@ -223,7 +233,11 @@ export default async function AdminAccountingPage({
                 <td className="px-4 py-3 text-xs text-muted">
                   {new Date(entry.entry_date).toLocaleDateString("en-GB")}
                 </td>
-                <td className="px-4 py-3 capitalize">{entry.type}</td>
+                <td className="px-4 py-3 capitalize">
+                  {t.has(`ledgerType.${entry.type}`)
+                    ? t(`ledgerType.${entry.type}` as "ledgerType.revenue")
+                    : entry.type}
+                </td>
                 <td className="px-4 py-3">{entry.description}</td>
                 <td
                   className={`px-4 py-3 text-end font-semibold ${

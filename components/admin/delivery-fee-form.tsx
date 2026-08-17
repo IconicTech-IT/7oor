@@ -3,11 +3,15 @@
 import { Formik, Form, Field } from "formik";
 import * as yup from "yup";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import { updateDeliveryFeeAction } from "@/lib/actions/settings";
 
 const schema = yup.object({ amount: yup.number().min(0).required() });
 
 export function DeliveryFeeForm({ initialAmount }: { initialAmount: number }) {
+  const t = useTranslations("admin.settings");
+  const tCommon = useTranslations("common");
+
   return (
     <Formik
       initialValues={{ amount: initialAmount }}
@@ -15,7 +19,7 @@ export function DeliveryFeeForm({ initialAmount }: { initialAmount: number }) {
       onSubmit={async (values, { setSubmitting }) => {
         const result = await updateDeliveryFeeAction(Number(values.amount));
         if (result.error) toast.error(result.error);
-        else toast.success("Delivery fee updated");
+        else toast.success(t("toastUpdated"));
         setSubmitting(false);
       }}
     >
@@ -23,7 +27,7 @@ export function DeliveryFeeForm({ initialAmount }: { initialAmount: number }) {
         <Form className="flex items-end gap-3">
           <div>
             <label className="mb-1 block text-xs font-semibold text-muted">
-              Delivery fee (EGP)
+              {t("deliveryFeeLabel")}
             </label>
             <Field
               type="number"
@@ -38,7 +42,7 @@ export function DeliveryFeeForm({ initialAmount }: { initialAmount: number }) {
             disabled={isSubmitting}
             className="rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
           >
-            {isSubmitting ? "Saving..." : "Save"}
+            {isSubmitting ? t("saving") : tCommon("save")}
           </button>
         </Form>
       )}

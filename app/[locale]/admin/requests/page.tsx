@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getAllRequestsAdmin } from "@/lib/data/admin-requests";
 
@@ -14,14 +15,16 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default async function AdminRequestsPage() {
   const requests = await getAllRequestsAdmin();
+  const t = await getTranslations("admin.requests");
+  const tStatus = await getTranslations("requests.status");
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">Requests</h1>
-      <p className="mt-1 text-sm text-muted">Custom items, bulk orders, and special jobs.</p>
+      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
 
       <div className="mt-6 flex flex-col gap-3">
-        {requests.length === 0 && <p className="py-16 text-center text-muted">No requests yet.</p>}
+        {requests.length === 0 && <p className="py-16 text-center text-muted">{t("empty")}</p>}
         {requests.map((r) => (
           <Link
             key={r.id}
@@ -41,7 +44,7 @@ export default async function AdminRequestsPage() {
                   STATUS_COLORS[r.status] ?? ""
                 }`}
               >
-                {r.status.replace("_", " ")}
+                {tStatus(r.status as "new")}
               </span>
             </div>
           </Link>

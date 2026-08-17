@@ -1,4 +1,5 @@
 import { AlertTriangle } from "lucide-react";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getInventoryOverview, getRecentMovements } from "@/lib/data/inventory";
 import { StockAdjustDialog } from "@/components/admin/stock-adjust-dialog";
 
@@ -6,33 +7,35 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminInventoryPage() {
   const [rows, movements] = await Promise.all([getInventoryOverview(), getRecentMovements(30)]);
+  const t = await getTranslations("admin.inventory");
+  const locale = await getLocale();
 
   return (
     <div>
-      <h1 className="text-2xl font-extrabold">Inventory</h1>
-      <p className="mt-1 text-sm text-muted">
-        On Hand minus Reserved (open sales orders) gives what&apos;s actually free to sell.
-      </p>
+      <h1 className="text-2xl font-extrabold">{t("title")}</h1>
+      <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
 
       <div className="mt-6 overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-bold uppercase text-muted">
-              <th className="px-4 py-3 text-start">Product</th>
-              <th className="px-4 py-3 text-end">On Hand</th>
-              <th className="px-4 py-3 text-end">Reserved</th>
-              <th className="px-4 py-3 text-end">Available</th>
+              <th className="px-4 py-3 text-start">{t("table.product")}</th>
+              <th className="px-4 py-3 text-end">{t("table.onHand")}</th>
+              <th className="px-4 py-3 text-end">{t("table.reserved")}</th>
+              <th className="px-4 py-3 text-end">{t("table.available")}</th>
               <th className="px-4 py-3" />
             </tr>
           </thead>
           <tbody>
             {rows.map((row) => {
               const isLow = row.available <= row.lowStockThreshold;
+              const productName = locale === "ar" ? row.productNameAr : row.productNameEn;
+              const variantName = locale === "ar" ? row.variantNameAr : row.variantNameEn;
               return (
                 <tr key={`${row.productId}:${row.variantId ?? ""}`} className="border-b border-border last:border-0">
                   <td className="px-4 py-3">
-                    <p className="font-semibold">{row.productNameEn}</p>
-                    {row.variantNameEn && <p className="text-xs text-muted">{row.variantNameEn}</p>}
+                    <p className="font-semibold">{productName}</p>
+                    {variantName && <p className="text-xs text-muted">{variantName}</p>}
                   </td>
                   <td className="px-4 py-3 text-end">{row.onHand}</td>
                   <td className="px-4 py-3 text-end text-muted">{row.reserved}</td>
@@ -50,7 +53,7 @@ export default async function AdminInventoryPage() {
                     <StockAdjustDialog
                       productId={row.productId}
                       variantId={row.variantId}
-                      label={row.variantNameEn ? `${row.productNameEn} — ${row.variantNameEn}` : row.productNameEn}
+                      label={variantName ? `${productName} — ${variantName}` : productName}
                     />
                   </td>
                 </tr>
@@ -60,15 +63,15 @@ export default async function AdminInventoryPage() {
         </table>
       </div>
 
-      <h2 className="mt-10 text-lg font-bold">Recent movements</h2>
+      <h2 className="mt-10 text-lg font-bold">{t("recentMovements")}</h2>
       <div className="mt-4 overflow-x-auto rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-xs font-bold uppercase text-muted">
-              <th className="px-4 py-3 text-start">Product</th>
-              <th className="px-4 py-3 text-start">Reason</th>
-              <th className="px-4 py-3 text-end">Qty</th>
-              <th className="px-4 py-3 text-start">Date</th>
+              <th className="px-4 py-3 text-start">{t("table.product")}</th>
+              <th className="px-4 py-3 text-start">{t("table.reason")}</th>
+              <th className="px-4 py-3 text-end">{t("table.qty")}</th>
+              <th className="px-4 py-3 text-start">{t("table.date")}</th>
             </tr>
           </thead>
           <tbody>
@@ -78,7 +81,11 @@ export default async function AdminInventoryPage() {
                   {m.productName}
                   {m.variantName && <span className="text-muted"> — {m.variantName}</span>}
                 </td>
-                <td className="px-4 py-3 capitalize text-muted">{m.reason.replace("-", " ")}</td>
+                <td className="px-4 py-3 capitalize text-muted">
+                  {t.has(`reasons.${m.reason}`)
+                    ? t(`reasons.${m.reason}` as "reasons.adjustment")
+                    : m.reason.replace(/[-_]/g, " ")}
+                </td>
                 <td
                   className={`px-4 py-3 text-end font-semibold ${
                     m.direction === "in" ? "text-success" : "text-danger"

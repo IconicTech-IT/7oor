@@ -90,6 +90,11 @@ export async function getInventoryOverview(): Promise<InventoryRow[]> {
   return rows.sort((a, b) => a.available - b.available);
 }
 
+export async function getLowStockCount(): Promise<number> {
+  const rows = await getInventoryOverview();
+  return rows.filter((r) => r.available <= r.lowStockThreshold).length;
+}
+
 export type MovementRow = {
   id: string;
   productName: string;
