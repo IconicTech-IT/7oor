@@ -54,7 +54,7 @@ export function HeaderNav({ links }: { links: NavLink[] }) {
                   key={link.href}
                   href={link.href}
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-black/5"
+                  className="rounded-lg px-3 py-2.5 text-sm font-medium hover:bg-foreground/5"
                 >
                   {link.label}
                 </Link>

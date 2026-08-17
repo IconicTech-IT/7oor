@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { createClient } from "@/lib/supabase/server";
 import { Logo } from "./logo";
 import { LanguageSwitcher } from "./language-switcher";
+import { ThemeToggle } from "./theme-toggle";
 import { HeaderNav } from "./header-nav";
 import { UserMenu } from "./user-menu";
 import { CartButton } from "@/components/cart/cart-button";
@@ -41,6 +42,7 @@ export async function SiteHeader() {
             <HeaderNav links={links} />
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <LanguageSwitcher />
             <CartButton />
             <UserMenu user={user ? { email: user.email ?? "", role } : null} />

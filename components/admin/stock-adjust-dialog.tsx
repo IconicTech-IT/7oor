@@ -35,7 +35,7 @@ export function StockAdjustDialog({ productId, variantId, label }: Props) {
           <div className="w-full max-w-sm rounded-2xl bg-card p-5 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-bold">Adjust stock — {label}</h3>
-              <button onClick={() => setOpen(false)} className="rounded-lg p-1 hover:bg-black/5">
+              <button onClick={() => setOpen(false)} className="rounded-lg p-1 hover:bg-foreground/5">
                 <X className="h-4 w-4" />
               </button>
             </div>

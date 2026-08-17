@@ -47,7 +47,7 @@ export function UserMenu({ user }: Props) {
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-black/5 text-foreground hover:bg-black/10"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-foreground/5 text-foreground hover:bg-foreground/10"
         aria-label={t("account")}
       >
         <User className="h-5 w-5" />
@@ -57,14 +57,14 @@ export function UserMenu({ user }: Props) {
           <p className="truncate px-4 py-2 text-xs text-muted">{user.email}</p>
           <Link
             href="/account/orders"
-            className="block px-4 py-2 text-sm hover:bg-black/5"
+            className="block px-4 py-2 text-sm hover:bg-foreground/5"
             onClick={() => setOpen(false)}
           >
             {t("myOrders")}
           </Link>
           <Link
             href="/account/requests"
-            className="block px-4 py-2 text-sm hover:bg-black/5"
+            className="block px-4 py-2 text-sm hover:bg-foreground/5"
             onClick={() => setOpen(false)}
           >
             {t("myRequests")}
@@ -72,7 +72,7 @@ export function UserMenu({ user }: Props) {
           {(user.role === "admin" || user.role === "staff") && (
             <Link
               href="/admin"
-              className="block px-4 py-2 text-sm font-medium text-primary hover:bg-black/5"
+              className="block px-4 py-2 text-sm font-medium text-primary hover:bg-foreground/5"
               onClick={() => setOpen(false)}
             >
               {t("admin")}
@@ -80,7 +80,7 @@ export function UserMenu({ user }: Props) {
           )}
           <button
             onClick={handleLogout}
-            className="block w-full px-4 py-2 text-start text-sm text-danger hover:bg-black/5"
+            className="block w-full px-4 py-2 text-start text-sm text-danger hover:bg-foreground/5"
           >
             {t("logout")}
           </button>

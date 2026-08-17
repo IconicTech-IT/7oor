@@ -105,7 +105,7 @@ function CategoryRow({
         <p className="text-xs text-muted">/{category.slug}</p>
       </div>
       <div className="flex items-center gap-1">
-        <button onClick={onEdit} className="rounded-lg p-2 hover:bg-black/5" aria-label="Edit">
+        <button onClick={onEdit} className="rounded-lg p-2 hover:bg-foreground/5" aria-label="Edit">
           <Pencil className="h-4 w-4" />
         </button>
         <button

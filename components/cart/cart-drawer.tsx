@@ -52,7 +52,7 @@ export function CartDrawer() {
               <h2 className="text-lg font-bold">{t("title")}</h2>
               <button
                 onClick={close}
-                className="rounded-full p-2 hover:bg-black/5"
+                className="rounded-full p-2 hover:bg-foreground/5"
                 aria-label={t("close") ?? "Close"}
               >
                 <X className="h-5 w-5" />
@@ -118,7 +118,7 @@ export function CartDrawer() {
                       </div>
                       <button
                         onClick={() => removeItem(item.productId, item.variantId)}
-                        className="self-start rounded-full p-1.5 text-muted hover:bg-black/5 hover:text-danger"
+                        className="self-start rounded-full p-1.5 text-muted hover:bg-foreground/5 hover:text-danger"
                         aria-label={t("remove")}
                       >
                         <Trash2 className="h-4 w-4" />

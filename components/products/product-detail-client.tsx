@@ -133,7 +133,7 @@ export function ProductDetailClient({ product }: { product: ProductDetailData })
                 >
                   {v.colorHex && (
                     <span
-                      className="h-3.5 w-3.5 rounded-full border border-black/10"
+                      className="h-3.5 w-3.5 rounded-full border border-foreground/10"
                       style={{ backgroundColor: v.colorHex }}
                     />
                   )}

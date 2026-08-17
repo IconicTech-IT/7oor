@@ -8,6 +8,7 @@ import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { AosInit } from "@/components/layout/aos-init";
+import { ThemeProvider } from "@/components/layout/theme-provider";
 import "../globals.css";
 
 const cairo = Cairo({
@@ -55,16 +56,19 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
+      suppressHydrationWarning
       className={`${cairo.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-background text-foreground">
-        <NextIntlClientProvider>
-          <AosInit />
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-          <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
-        </NextIntlClientProvider>
+        <ThemeProvider>
+          <NextIntlClientProvider>
+            <AosInit />
+            <SiteHeader />
+            <main className="flex-1">{children}</main>
+            <SiteFooter />
+            <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
