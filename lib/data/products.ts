@@ -82,6 +82,34 @@ export async function getRelatedProducts(
   return (data ?? []) as unknown as ProductWithRelations[];
 }
 
+/** Unfiltered (includes inactive / custom_request / combo) — for the admin panel only. */
+export async function getAllProductsAdmin(): Promise<ProductWithRelations[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select(BASE_SELECT)
+    .order("created_at", { ascending: false });
+  if (error) console.error("getAllProductsAdmin:", error.message);
+  return (data ?? []) as unknown as ProductWithRelations[];
+}
+
+export async function getProductByIdAdmin(id: string): Promise<ProductWithCombo | null> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select(
+      `${BASE_SELECT}, combo_components:product_combo_components!product_combo_components_combo_product_id_fkey(
+        *,
+        component_product:products!product_combo_components_component_product_id_fkey(id, name_ar, name_en, slug),
+        component_variant:product_variants!product_combo_components_component_variant_id_fkey(id, name_ar, name_en)
+      )`,
+    )
+    .eq("id", id)
+    .single();
+  if (error) console.error("getProductByIdAdmin:", error.message);
+  return (data ?? null) as unknown as ProductWithCombo | null;
+}
+
 export async function getDeliveryFee(): Promise<number> {
   const supabase = await createClient();
   const { data, error } = await supabase
