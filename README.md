@@ -2,10 +2,12 @@
 
 A bilingual (Arabic default/RTL, English/LTR) e-commerce site for mobile accessories,
 chargers, stationery, and printing services — with a full Odoo-style admin panel
-(products, categories, sales orders, FIFO inventory, purchases, accounting).
+(products, categories, sales orders, FIFO inventory, purchases, accounting, requests),
+dark/light mode, and SVG draw-in animations throughout.
 
-**Stack:** Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind CSS v4 · Supabase
-(Postgres, Auth, Storage, Realtime) · GSAP + Framer Motion + AOS · Formik + Yup ·
+**Stack:** Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind CSS v4 (with
+`next-themes` dark mode) · Supabase (Postgres, Auth, Storage, Realtime) · GSAP + Framer
+Motion + AOS · Formik + Yup (client) + Zod (independent server-side re-validation) ·
 Nodemailer (Gmail SMTP) · @react-pdf/renderer.
 
 ---
@@ -103,8 +105,16 @@ A few IDOR/privilege-escalation issues were found and fixed during development
   caller (`app_role()` returning `NULL`) silently bypassed the check, because PL/pgSQL
   treats `IF NULL THEN` as `false` — fixed by wrapping in `coalesce(app_role(), '')`.
 
-All forms validate with Yup **both** client-side (Formik) and again inside the Server
-Action — the client check is for UX, never trusted as the only gate.
+- **Open redirect** — login's `?next=` param was passed straight to `redirect()` with
+  no check, which would have let a crafted login link send an authenticated user to an
+  external URL. Fixed with `sanitizeRedirectPath()` (same-site relative paths only).
+
+Every Server Action that writes to the database validates its input through **two
+independent libraries** before touching Supabase: Formik+Yup client-side for UX, and
+again with Zod inside the Server Action itself (`lib/validate.ts`'s `validateBoth`) —
+a bug or omission in one library's schema can't by itself let malformed data through,
+since both have to agree the input is valid. The client-side check is never trusted as
+the only gate.
 
 ## 6. Known limitations
 
@@ -137,7 +147,9 @@ components/              UI, grouped by feature (layout, home, products, cart, c
                           admin, auth, contact, requests)
 lib/actions/             Server Actions (mutations) — one file per domain
 lib/data/                Read-only Supabase queries used by Server Components
-lib/validators/          Yup schemas, shared by Formik (client) and Server Actions
+lib/validators/          Yup + Zod schema pairs — Yup drives Formik client-side, Zod
+                          re-checks the same input inside the matching Server Action
+lib/validate.ts          validateBoth() — runs both schemas, throws if either rejects
 lib/supabase/            client.ts (browser), server.ts (RSC/actions), admin.ts (service role)
 i18n/                    next-intl routing/navigation config
 messages/{ar,en}.json    Translation strings

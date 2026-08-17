@@ -1,6 +1,11 @@
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getProductBySlug, getRelatedProducts } from "@/lib/data/products";
+import {
+  getAvailabilityMap,
+  getCardAvailability,
+  getVariantAvailabilityRecord,
+} from "@/lib/data/availability";
 import { ProductDetailClient } from "@/components/products/product-detail-client";
 import { ProductCard } from "@/components/products/product-card";
 import { localized } from "@/lib/types";
@@ -18,9 +23,13 @@ export default async function ProductDetailPage({
 
   const locale = await getLocale();
   const t = await getTranslations("products");
-  const related = await getRelatedProducts(product.category_id, product.id);
+  const [related, availabilityMap] = await Promise.all([
+    getRelatedProducts(product.category_id, product.id),
+    getAvailabilityMap(),
+  ]);
 
   const fullDescription = localized(locale, product.description_ar, product.description_en);
+  const availability = getVariantAvailabilityRecord(availabilityMap, product);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -43,6 +52,7 @@ export default async function ProductDetailPage({
             colorHex: v.color_hex,
           })),
         }}
+        availability={availability}
       />
 
       {fullDescription && (
@@ -78,7 +88,7 @@ export default async function ProductDetailPage({
           <h2 className="text-xl font-extrabold">{t("relatedProducts")}</h2>
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {related.map((p) => (
-              <ProductCard key={p.id} product={p} />
+              <ProductCard key={p.id} product={p} availableQty={getCardAvailability(availabilityMap, p)} />
             ))}
           </div>
         </div>

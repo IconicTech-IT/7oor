@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { getCategoryTree, getCategoryIdsForSlug } from "@/lib/data/categories";
 import { getProducts } from "@/lib/data/products";
+import { getAvailabilityMap, getCardAvailability } from "@/lib/data/availability";
 import { ProductsFilterBar } from "@/components/products/products-filter-bar";
 import { ProductGrid } from "@/components/products/product-grid";
 import { ProductCard } from "@/components/products/product-card";
@@ -17,7 +18,10 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   const categoryIds = sp.category ? await getCategoryIdsForSlug(sp.category) : undefined;
   const minPrice = sp.min ? Number(sp.min) : undefined;
   const maxPrice = sp.max ? Number(sp.max) : undefined;
-  const products = await getProducts({ categoryIds, minPrice, maxPrice });
+  const [products, availabilityMap] = await Promise.all([
+    getProducts({ categoryIds, minPrice, maxPrice }),
+    getAvailabilityMap(),
+  ]);
   const gridKey = `${sp.category ?? "all"}-${sp.min ?? ""}-${sp.max ?? ""}`;
 
   return (
@@ -37,7 +41,11 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
           ) : (
             <ProductGrid key={gridKey}>
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  availableQty={getCardAvailability(availabilityMap, product)}
+                />
               ))}
             </ProductGrid>
           )}

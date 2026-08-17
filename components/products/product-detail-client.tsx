@@ -33,7 +33,13 @@ export type ProductDetailData = {
   variants: VariantData[];
 };
 
-export function ProductDetailClient({ product }: { product: ProductDetailData }) {
+type Props = {
+  product: ProductDetailData;
+  /** Keyed by variant id, "" for the base product — see lib/data/availability.ts. */
+  availability: Record<string, number>;
+};
+
+export function ProductDetailClient({ product, availability }: Props) {
   const locale = useLocale() as "ar" | "en";
   const t = useTranslations("products");
   const router = useRouter();
@@ -51,6 +57,8 @@ export function ProductDetailClient({ product }: { product: ProductDetailData })
   const displayImage = selectedVariant?.imageUrl ?? product.imageUrl;
   const displayPrice = selectedVariant?.price ?? product.price;
   const isCustomRequest = product.type === "custom_request" || product.slug === CUSTOM_WRITING_SLUG;
+  const currentAvailable = availability[selectedVariantId ?? ""] ?? 0;
+  const isOutOfStock = !isCustomRequest && currentAvailable <= 0;
 
   function handleAddToCart() {
     addItem({
@@ -86,7 +94,13 @@ export function ProductDetailClient({ product }: { product: ProductDetailData })
             className="absolute inset-0"
           >
             {displayImage ? (
-              <Image src={displayImage} alt="" fill sizes="50vw" className="object-cover" />
+              <Image
+                src={displayImage}
+                alt=""
+                fill
+                sizes="50vw"
+                className={`object-cover ${isOutOfStock ? "opacity-50 grayscale" : ""}`}
+              />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-muted-2">
                 <ImageOff className="h-16 w-16" />
@@ -94,6 +108,11 @@ export function ProductDetailClient({ product }: { product: ProductDetailData })
             )}
           </motion.div>
         </AnimatePresence>
+        {isOutOfStock && (
+          <span className="absolute start-3 top-3 rounded-full bg-foreground/80 px-3 py-1 text-xs font-bold text-background">
+            {t("outOfStock")}
+          </span>
+        )}
       </div>
 
       <div className="flex flex-col gap-5">
@@ -121,25 +140,29 @@ export function ProductDetailClient({ product }: { product: ProductDetailData })
         {product.variants.length > 0 && (
           <div>
             <div className="flex flex-wrap gap-2">
-              {product.variants.map((v) => (
-                <button
-                  key={v.id}
-                  onClick={() => setSelectedVariantId(v.id)}
-                  className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
-                    selectedVariantId === v.id
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                >
-                  {v.colorHex && (
-                    <span
-                      className="h-3.5 w-3.5 rounded-full border border-foreground/10"
-                      style={{ backgroundColor: v.colorHex }}
-                    />
-                  )}
-                  {locale === "ar" ? v.nameAr : v.nameEn}
-                </button>
-              ))}
+              {product.variants.map((v) => {
+                const variantAvailable = (availability[v.id] ?? 0) > 0;
+                return (
+                  <button
+                    key={v.id}
+                    onClick={() => setSelectedVariantId(v.id)}
+                    className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                      selectedVariantId === v.id
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border hover:border-primary/50"
+                    } ${!variantAvailable ? "opacity-40" : ""}`}
+                  >
+                    {v.colorHex && (
+                      <span
+                        className="h-3.5 w-3.5 rounded-full border border-foreground/10"
+                        style={{ backgroundColor: v.colorHex }}
+                      />
+                    )}
+                    {locale === "ar" ? v.nameAr : v.nameEn}
+                    {!variantAvailable && <span className="text-[10px]">({t("outOfStock")})</span>}
+                  </button>
+                );
+              })}
             </div>
           </div>
         )}
@@ -151,20 +174,27 @@ export function ProductDetailClient({ product }: { product: ProductDetailData })
                 className="p-2.5"
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
                 aria-label="decrease"
+                disabled={isOutOfStock}
               >
                 <Minus className="h-4 w-4" />
               </button>
               <span className="min-w-6 text-center font-semibold">{qty}</span>
-              <button className="p-2.5" onClick={() => setQty((q) => q + 1)} aria-label="increase">
+              <button
+                className="p-2.5"
+                onClick={() => setQty((q) => q + 1)}
+                aria-label="increase"
+                disabled={isOutOfStock}
+              >
                 <Plus className="h-4 w-4" />
               </button>
             </div>
             <button
               onClick={handleAddToCart}
-              className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary-hover"
+              disabled={isOutOfStock}
+              className="flex flex-1 items-center justify-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-primary"
             >
               <ShoppingBag className="h-4 w-4" />
-              {t("addToCart")}
+              {isOutOfStock ? t("outOfStock") : t("addToCart")}
             </button>
           </div>
         ) : (

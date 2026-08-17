@@ -1,9 +1,16 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { ProductCard } from "@/components/products/product-card";
+import { getCardAvailability, type AvailabilityMap } from "@/lib/data/availability";
 import type { ProductWithRelations } from "@/lib/types";
 
-export async function FeaturedSection({ products }: { products: ProductWithRelations[] }) {
+export async function FeaturedSection({
+  products,
+  availabilityMap,
+}: {
+  products: ProductWithRelations[];
+  availabilityMap: AvailabilityMap;
+}) {
   const t = await getTranslations("home.featured");
 
   return (
@@ -26,7 +33,12 @@ export async function FeaturedSection({ products }: { products: ProductWithRelat
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
           {products.slice(0, 8).map((product) => (
-            <ProductCard key={product.id} product={product} aos="fade-up" />
+            <ProductCard
+              key={product.id}
+              product={product}
+              aos="fade-up"
+              availableQty={getCardAvailability(availabilityMap, product)}
+            />
           ))}
         </div>
       </div>

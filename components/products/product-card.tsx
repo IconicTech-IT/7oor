@@ -9,9 +9,12 @@ import type { ProductWithRelations } from "@/lib/types";
 export async function ProductCard({
   product,
   aos,
+  availableQty,
 }: {
   product: ProductWithRelations;
   aos?: string;
+  /** Omit when availability wasn't computed for this listing (treated as always in stock). */
+  availableQty?: number;
 }) {
   const locale = await getLocale();
   const t = await getTranslations("products");
@@ -25,6 +28,7 @@ export async function ProductCard({
   const maxPrice = Math.max(...prices);
   const isJob = product.pricing_unit === "job";
   const isCustom = product.type === "custom_request";
+  const isOutOfStock = availableQty !== undefined && availableQty <= 0;
 
   return (
     <Link
@@ -39,16 +43,23 @@ export async function ProductCard({
             alt={name}
             fill
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className={`object-cover transition-transform duration-300 group-hover:scale-105 ${
+              isOutOfStock ? "opacity-50 grayscale" : ""
+            }`}
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-muted-2">
             <ImageOff className="h-10 w-10" />
           </div>
         )}
-        {product.type === "combo" && (
+        {product.type === "combo" && !isOutOfStock && (
           <span className="absolute start-2 top-2 rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-accent-foreground">
             {locale === "ar" ? "عرض" : "Bundle"}
+          </span>
+        )}
+        {isOutOfStock && (
+          <span className="absolute start-2 top-2 rounded-full bg-foreground/80 px-2.5 py-1 text-xs font-bold text-background">
+            {t("outOfStock")}
           </span>
         )}
       </div>
@@ -61,7 +72,7 @@ export async function ProductCard({
             {isJob && <span className="ms-1 text-xs font-normal text-muted">/{locale === "ar" ? "صفحة" : "pg"}</span>}
           </span>
           <span className="text-xs font-semibold text-primary group-hover:underline">
-            {isCustom ? t("customService") : t("viewDetails")}
+            {isOutOfStock ? "" : isCustom ? t("customService") : t("viewDetails")}
           </span>
         </div>
       </div>
