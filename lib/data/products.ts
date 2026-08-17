@@ -20,6 +20,9 @@ export type ProductFilters = {
   categoryIds?: string[];
   minPrice?: number;
   maxPrice?: number;
+  search?: string;
+  limit?: number;
+  offset?: number;
 };
 
 export async function getProducts(filters: ProductFilters = {}): Promise<ProductWithRelations[]> {
@@ -39,10 +42,46 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
   if (typeof filters.maxPrice === "number") {
     query = query.lte("price", filters.maxPrice);
   }
+  if (filters.search?.trim()) {
+    const q = filters.search.trim().replace(/[%,]/g, "");
+    query = query.or(`name_ar.ilike.%${q}%,name_en.ilike.%${q}%`);
+  }
 
-  const { data, error } = await query.order("created_at", { ascending: false });
+  let orderedQuery = query.order("created_at", { ascending: false });
+  if (typeof filters.limit === "number" && typeof filters.offset === "number") {
+    orderedQuery = orderedQuery.range(filters.offset, filters.offset + filters.limit - 1);
+  }
+
+  const { data, error } = await orderedQuery;
   if (error) console.error("getProducts:", error.message);
   return (data ?? []) as unknown as ProductWithRelations[];
+}
+
+export async function getProductsCount(filters: ProductFilters = {}): Promise<number> {
+  const supabase = await createClient();
+  let query = supabase
+    .from("products")
+    .select("id", { count: "exact", head: true })
+    .eq("is_active", true)
+    .neq("type", "custom_request");
+
+  if (filters.categoryIds?.length) {
+    query = query.in("category_id", filters.categoryIds);
+  }
+  if (typeof filters.minPrice === "number") {
+    query = query.gte("price", filters.minPrice);
+  }
+  if (typeof filters.maxPrice === "number") {
+    query = query.lte("price", filters.maxPrice);
+  }
+  if (filters.search?.trim()) {
+    const q = filters.search.trim().replace(/[%,]/g, "");
+    query = query.or(`name_ar.ilike.%${q}%,name_en.ilike.%${q}%`);
+  }
+
+  const { count, error } = await query;
+  if (error) console.error("getProductsCount:", error.message);
+  return count ?? 0;
 }
 
 export async function getProductBySlug(slug: string): Promise<ProductWithCombo | null> {

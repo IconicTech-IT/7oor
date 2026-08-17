@@ -94,7 +94,14 @@
     "outOfStock": "Out of stock",
     "relatedProducts": "Related products",
     "quantity": "Quantity",
-    "customService": "Request this service"
+    "customService": "Request this service",
+    "search": "Search products",
+    "searchPlaceholder": "Search in Arabic or English...",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {page} of {total}"
+    }
   },
   "cart": {
     "title": "Shopping Cart",
@@ -182,6 +189,25 @@
       "confirmed": "Confirmed",
       "done": "Completed",
       "cancelled": "Cancelled"
+    },
+    "cancelOrder": "Cancel order",
+    "cancelOrderConfirm": "Are you sure you want to cancel this order?",
+    "orderCancelled": "Order cancelled successfully",
+    "cancelOrderError": "Couldn't cancel this order"
+  },
+  "admin": {
+    "sidebarLabel": "Admin",
+    "nav": {
+      "dashboard": "Dashboard",
+      "products": "Products",
+      "categories": "Categories",
+      "orders": "Orders",
+      "requests": "Requests",
+      "inventory": "Inventory",
+      "purchases": "Purchases",
+      "accounting": "Accounting",
+      "settings": "Settings",
+      "staff": "Staff"
     }
   }
 }

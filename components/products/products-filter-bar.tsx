@@ -13,54 +13,74 @@ type Props = {
   selectedCategory?: string;
   minPrice?: string;
   maxPrice?: string;
+  searchQuery?: string;
 };
 
-export function ProductsFilterBar({ categories, selectedCategory, minPrice, maxPrice }: Props) {
+export function ProductsFilterBar({ categories, selectedCategory, minPrice, maxPrice, searchQuery }: Props) {
   const t = useTranslations("products.filters");
+  const tp = useTranslations("products");
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const [min, setMin] = useState(minPrice ?? "");
   const [max, setMax] = useState(maxPrice ?? "");
+  const [search, setSearch] = useState(searchQuery ?? "");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const applyParams = useCallback(
-    (next: { category?: string; min?: string; max?: string }) => {
+    (next: { category?: string; min?: string; max?: string; search?: string }) => {
       const params = new URLSearchParams();
       const category = next.category !== undefined ? next.category : selectedCategory;
       const minVal = next.min !== undefined ? next.min : min;
       const maxVal = next.max !== undefined ? next.max : max;
+      const searchVal = next.search !== undefined ? next.search : search;
       if (category) params.set("category", category);
       if (minVal) params.set("min", minVal);
       if (maxVal) params.set("max", maxVal);
+      if (searchVal) params.set("q", searchVal);
       const qs = params.toString();
       router.push(`${pathname}${qs ? `?${qs}` : ""}`);
     },
-    [pathname, router, selectedCategory, min, max],
+    [pathname, router, selectedCategory, min, max, search],
   );
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
-      applyParams({ min, max });
+      applyParams({ min, max, search });
     }, 500);
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [min, max]);
+  }, [min, max, search]);
 
-  const hasFilters = Boolean(selectedCategory || minPrice || maxPrice);
+  const hasFilters = Boolean(selectedCategory || minPrice || maxPrice || searchQuery);
 
   return (
     <aside className="w-full shrink-0 lg:w-64">
-      <div className="flex items-center justify-between">
+      <div>
+        <label htmlFor="product-search" className="sr-only">
+          {tp("search")}
+        </label>
+        <input
+          id="product-search"
+          type="search"
+          placeholder={tp("searchPlaceholder")}
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none"
+        />
+      </div>
+
+      <div className="mt-6 flex items-center justify-between">
         <h2 className="text-sm font-bold">{t("category")}</h2>
         {hasFilters && (
           <button
             onClick={() => {
               setMin("");
               setMax("");
+              setSearch("");
               router.push(pathname);
             }}
             className="inline-flex items-center gap-1 text-xs font-medium text-danger hover:underline"

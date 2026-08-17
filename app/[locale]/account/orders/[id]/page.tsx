@@ -3,6 +3,7 @@ import { Download } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getOrderDetail } from "@/lib/data/orders";
 import { formatEGP } from "@/lib/currency";
+import { CancelOrderButton } from "@/components/account/cancel-order-button";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,8 @@ export default async function OrderDetailPage({
           {tStatus(order.status)}
         </span>
       </div>
+
+      {order.status === "new" && <CancelOrderButton orderId={order.id} />}
 
       <div className="mt-6 rounded-2xl border border-border bg-card p-5">
         <ul className="flex flex-col gap-3">

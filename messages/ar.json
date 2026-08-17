@@ -94,7 +94,14 @@
     "outOfStock": "غير متوفر حاليًا",
     "relatedProducts": "منتجات ذات صلة",
     "quantity": "الكمية",
-    "customService": "اطلب الخدمة"
+    "customService": "اطلب الخدمة",
+    "search": "بحث عن منتجات",
+    "searchPlaceholder": "ابحث بالعربي أو الإنجليزي...",
+    "pagination": {
+      "previous": "السابق",
+      "next": "التالي",
+      "pageOf": "صفحة {page} من {total}"
+    }
   },
   "cart": {
     "title": "سلة المشتريات",
@@ -182,6 +189,25 @@
       "confirmed": "تم التأكيد",
       "done": "مكتمل",
       "cancelled": "ملغي"
+    },
+    "cancelOrder": "إلغاء الطلب",
+    "cancelOrderConfirm": "هل أنت متأكد إنك عايز تلغي الطلب ده؟",
+    "orderCancelled": "تم إلغاء الطلب بنجاح",
+    "cancelOrderError": "تعذر إلغاء الطلب"
+  },
+  "admin": {
+    "sidebarLabel": "لوحة التحكم",
+    "nav": {
+      "dashboard": "الرئيسية",
+      "products": "المنتجات",
+      "categories": "الأقسام",
+      "orders": "الطلبات",
+      "requests": "الطلبات الخاصة",
+      "inventory": "المخزون",
+      "purchases": "المشتريات",
+      "accounting": "الحسابات",
+      "settings": "الإعدادات",
+      "staff": "الموظفين"
     }
   }
 }
