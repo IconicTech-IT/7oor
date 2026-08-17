@@ -3,12 +3,12 @@ import { Cairo, Inter } from "next/font/google";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { Toaster } from "sonner";
 import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { AosInit } from "@/components/layout/aos-init";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import { ToastProvider } from "@/components/layout/toast-provider";
 import "../globals.css";
 
 const cairo = Cairo({
@@ -66,7 +66,7 @@ export default async function LocaleLayout({
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />
-            <Toaster position={dir === "rtl" ? "top-left" : "top-right"} richColors />
+            <ToastProvider position={dir === "rtl" ? "top-left" : "top-right"} richColors />
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>
