@@ -2,6 +2,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { getCategoryIcon } from "@/lib/category-icons";
 import { localized } from "@/lib/types";
+import { DrawIn } from "@/components/ui/draw-in";
 import type { Category } from "@/lib/types";
 
 export async function CategoriesSection({ categories }: { categories: Category[] }) {
@@ -30,7 +31,9 @@ export async function CategoriesSection({ categories }: { categories: Category[]
                 className="group flex flex-col items-center gap-3 rounded-2xl border border-border bg-card p-6 text-center transition-all hover:-translate-y-1 hover:border-primary hover:shadow-lg"
               >
                 <span className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                  <Icon className="h-7 w-7" />
+                  <DrawIn duration={700} delay={i * 60}>
+                    <Icon className="h-7 w-7" />
+                  </DrawIn>
                 </span>
                 <span className="text-sm font-bold">
                   {localized(locale, cat.name_ar, cat.name_en)}

@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Printer, Copy, PenTool } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { DrawIn } from "@/components/ui/draw-in";
 
 export async function ServicesSection() {
   const t = await getTranslations("home.services");
@@ -30,7 +31,9 @@ export async function ServicesSection() {
               data-aos-delay={i * 100}
               className="flex flex-col gap-3 rounded-2xl bg-background/10 p-6 backdrop-blur-sm"
             >
-              <Icon className="h-8 w-8 text-accent" />
+              <DrawIn duration={800} delay={i * 100}>
+                <Icon className="h-8 w-8 text-accent" />
+              </DrawIn>
               <h3 className="text-lg font-bold">{t(`items.${key}`)}</h3>
             </div>
           ))}

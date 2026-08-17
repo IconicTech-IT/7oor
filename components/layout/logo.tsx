@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/lib/utils";
+import { AnimatedLogoMark } from "./animated-logo-mark";
 
 export function Logo({ className }: { className?: string }) {
   return (
@@ -10,10 +11,7 @@ export function Logo({ className }: { className?: string }) {
         className,
       )}
     >
-      <span className="relative inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-        7
-        <span className="absolute -end-1 -top-1 h-2.5 w-2.5 rounded-full bg-accent" />
-      </span>
+      <AnimatedLogoMark className="h-9 w-9" />
       <span>oor</span>
     </Link>
   );
