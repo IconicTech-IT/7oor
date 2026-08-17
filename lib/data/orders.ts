@@ -32,6 +32,37 @@ export async function getOrderDetail(orderId: string) {
   return data;
 }
 
+/** Staff/admin view — RLS on sales_orders already scopes SELECT to staff/admin + owner. */
+export async function getAllOrdersAdmin() {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("sales_orders")
+    .select("*, invoice:invoices(*), items:sales_order_items(*)")
+    .order("created_at", { ascending: false });
+
+  if (error) console.error("getAllOrdersAdmin:", error.message);
+  return data ?? [];
+}
+
+export async function getOrderDetailAdmin(orderId: string) {
+  const supabase = await createClient();
+  const { data: order, error } = await supabase
+    .from("sales_orders")
+    .select("*, invoice:invoices(*), items:sales_order_items(*)")
+    .eq("id", orderId)
+    .single();
+
+  if (error || !order) return null;
+
+  const { data: customer } = await supabase
+    .from("profiles")
+    .select("full_name, phone")
+    .eq("id", order.customer_id)
+    .single();
+
+  return { ...order, customer };
+}
+
 export type InvoiceData = {
   invoiceNumber: string;
   orderNumber: string;

@@ -811,6 +811,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      adjust_stock: {
+        Args: {
+          p_direction: string
+          p_notes: string
+          p_product_id: string
+          p_qty: number
+          p_reason: string
+          p_variant_id: string
+        }
+        Returns: undefined
+      }
       app_role: { Args: Record<PropertyKey, never>; Returns: string }
       cancel_sales_order: {
         Args: { p_sales_order_id: string }
