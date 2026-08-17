@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "title": "7oor Store",
+    "description": "7oor Store — mobile accessories, chargers, stationery, and printing services."
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "contact": "Contact",
+    "requests": "Custom Request",
+    "policy": "Policy",
+    "cart": "Cart",
+    "login": "Login",
+    "register": "Register",
+    "account": "My Account",
+    "myOrders": "My Orders",
+    "myRequests": "My Requests",
+    "admin": "Admin",
+    "logout": "Logout"
+  },
+  "footer": {
+    "tagline": "Everything for your phone and your desk, in one place.",
+    "quickLinks": "Quick Links",
+    "contactUs": "Contact Us",
+    "rights": "All rights reserved"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "7oor Store",
+      "title": "Everything for your phone & desk",
+      "subtitle": "Mobile accessories, genuine chargers, stationery, and printing & photocopy services — all in one place.",
+      "cta": "Shop now",
+      "ctaSecondary": "Our services"
+    },
+    "categories": {
+      "eyebrow": "Shop by category",
+      "title": "Find exactly what you need"
+    },
+    "featured": {
+      "eyebrow": "Best sellers",
+      "title": "Picked for you",
+      "viewAll": "View all products"
+    },
+    "services": {
+      "eyebrow": "Our services",
+      "title": "Printing, photocopying & custom writing",
+      "subtitle": "Need documents copied, a job printed, or something custom written? We've got you.",
+      "cta": "Request a service"
+    },
+    "cta": {
+      "title": "Visit us or order online",
+      "subtitle": "Pick up in-store or get it delivered to your door.",
+      "cta": "Get in touch"
+    }
+  },
+  "common": {
+    "egp": "EGP",
+    "loading": "Loading...",
+    "error": "Something went wrong, please try again.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "close": "Close",
+    "viewDetails": "View details",
+    "required": "Required",
+    "optional": "Optional",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "products": {
+    "title": "Products",
+    "filters": {
+      "category": "Category",
+      "allCategories": "All categories",
+      "price": "Price",
+      "minPrice": "Min",
+      "maxPrice": "Max",
+      "clear": "Clear filters"
+    },
+    "noResults": "No matching products",
+    "addToCart": "Add to cart",
+    "outOfStock": "Out of stock",
+    "relatedProducts": "Related products",
+    "quantity": "Quantity",
+    "customService": "Request this service"
+  },
+  "cart": {
+    "title": "Shopping Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "continueShopping": "Continue shopping"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "fulfillment": "Fulfillment method",
+    "pickup": "In-store pickup",
+    "delivery": "Delivery",
+    "deliveryAddress": "Delivery address",
+    "deliveryFee": "Delivery fee",
+    "payment": "Payment method",
+    "cash": "Cash on pickup/delivery",
+    "instapay": "InstaPay",
+    "vodafoneCash": "Vodafone Cash",
+    "otherWallet": "Other e-wallet",
+    "uploadScreenshot": "Upload transfer screenshot",
+    "total": "Total",
+    "placeOrder": "Place order",
+    "orderPlaced": "Your order was placed successfully",
+    "downloadInvoice": "Download invoice",
+    "orderNumber": "Order number"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "phone": "Phone number",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "createAccount": "Create account",
+    "signIn": "Sign in"
+  },
+  "requests": {
+    "title": "Custom Request",
+    "subtitle": "Need something we don't stock, or a custom job? Tell us about it.",
+    "name": "Name",
+    "contact": "Contact (phone or email)",
+    "category": "Category",
+    "description": "Request details",
+    "qtyOrBudget": "Quantity or approximate budget",
+    "attachment": "Attach an image (optional)",
+    "submit": "Submit request",
+    "success": "Your request was submitted, we'll be in touch soon.",
+    "myRequests": "My Requests",
+    "status": {
+      "new": "New",
+      "in_review": "In review",
+      "quoted": "Quoted",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "completed": "Completed"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Visit us or send a message",
+    "address": "Address",
+    "phone": "Phone",
+    "hours": "Working hours",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Your message was sent successfully"
+  },
+  "policy": {
+    "title": "Policy & Terms"
+  },
+  "account": {
+    "title": "My Account",
+    "orders": "Orders",
+    "requests": "Requests",
+    "noOrders": "No orders yet",
+    "noRequests": "No requests yet"
+  }
+}
