@@ -3,13 +3,25 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "@/i18n/navigation";
 import { getLocale } from "next-intl/server";
-import { loginSchema, registerSchema } from "@/lib/validators/auth";
+import {
+  loginSchema,
+  loginZodSchema,
+  registerSchema,
+  registerZodSchema,
+  sanitizeRedirectPath,
+} from "@/lib/validators/auth";
+import { validateBoth } from "@/lib/validate";
 
 export type LoginInput = { email: string; password: string; next?: string };
 export type RegisterInput = { fullName: string; phone: string; email: string; password: string };
 
 export async function loginAction(input: LoginInput) {
-  const data = await loginSchema.validate(input, { stripUnknown: true, abortEarly: true });
+  let data;
+  try {
+    data = await validateBoth(loginSchema, loginZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signInWithPassword(data);
@@ -18,12 +30,17 @@ export async function loginAction(input: LoginInput) {
   }
 
   const locale = await getLocale();
-  redirect({ href: input.next || "/", locale });
+  redirect({ href: sanitizeRedirectPath(input.next), locale });
   return {};
 }
 
 export async function registerAction(input: RegisterInput) {
-  const data = await registerSchema.validate(input, { stripUnknown: true, abortEarly: true });
+  let data;
+  try {
+    data = await validateBoth(registerSchema, registerZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
 
   const supabase = await createClient();
   const { data: signUpData, error } = await supabase.auth.signUp({

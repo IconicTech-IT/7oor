@@ -1,9 +1,10 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { requestSchema } from "@/lib/validators/request";
+import { requestSchema, requestZodSchema } from "@/lib/validators/request";
 import { uploadUserFile, getSignedUrl } from "@/lib/storage";
 import { sendNotificationEmail, escapeHtml } from "@/lib/email/sendMail";
+import { validateBoth } from "@/lib/validate";
 
 export type RequestActionResult = { success?: boolean; error?: string };
 
@@ -19,18 +20,15 @@ export async function submitRequestAction(formData: FormData): Promise<RequestAc
 
   let data;
   try {
-    data = await requestSchema.validate(
-      {
-        name: formData.get("name"),
-        contact: formData.get("contact"),
-        category: formData.get("category") || undefined,
-        description: formData.get("description"),
-        qtyOrBudget: formData.get("qtyOrBudget") || undefined,
-        fulfillmentMethod: formData.get("fulfillmentMethod"),
-        deliveryAddress: formData.get("deliveryAddress") || undefined,
-      },
-      { stripUnknown: true, abortEarly: true },
-    );
+    data = await validateBoth(requestSchema, requestZodSchema, {
+      name: formData.get("name"),
+      contact: formData.get("contact"),
+      category: formData.get("category") || undefined,
+      description: formData.get("description"),
+      qtyOrBudget: formData.get("qtyOrBudget") || undefined,
+      fulfillmentMethod: formData.get("fulfillmentMethod"),
+      deliveryAddress: formData.get("deliveryAddress") || undefined,
+    });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Invalid input";
     return { error: message };

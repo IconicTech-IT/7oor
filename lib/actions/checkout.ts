@@ -2,6 +2,13 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { uploadUserFile } from "@/lib/storage";
+import {
+  checkoutSchema,
+  checkoutZodSchema,
+  checkoutItemsSchema,
+  checkoutItemsZodSchema,
+} from "@/lib/validators/checkout";
+import { validateBoth } from "@/lib/validate";
 
 export type PlaceOrderResult = { orderId?: string; error?: string };
 
@@ -20,19 +27,25 @@ export async function placeOrderAction(formData: FormData): Promise<PlaceOrderRe
     return { error: "You must be logged in to check out." };
   }
 
-  let items: { productId: string; variantId: string | null; qty: number }[];
+  let rawItems: unknown;
   try {
-    items = JSON.parse(String(formData.get("items") ?? "[]"));
+    rawItems = JSON.parse(String(formData.get("items") ?? "[]"));
   } catch {
     return { error: "Invalid cart data" };
   }
-  if (!Array.isArray(items) || items.length === 0) {
-    return { error: "Your cart is empty" };
-  }
 
-  const fulfillmentMethod = String(formData.get("fulfillmentMethod") ?? "");
-  const deliveryAddress = String(formData.get("deliveryAddress") ?? "").trim();
-  const paymentMethod = String(formData.get("paymentMethod") ?? "");
+  let items;
+  let fields;
+  try {
+    items = await validateBoth(checkoutItemsSchema, checkoutItemsZodSchema, rawItems);
+    fields = await validateBoth(checkoutSchema, checkoutZodSchema, {
+      fulfillmentMethod: formData.get("fulfillmentMethod"),
+      deliveryAddress: formData.get("deliveryAddress") || undefined,
+      paymentMethod: formData.get("paymentMethod"),
+    });
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid checkout data" };
+  }
 
   // Empty string reads identically to "not provided" in create_sales_order's own
   // null-or-blank checks, so the RPC's required (non-nullable) text args stay satisfied.
@@ -48,10 +61,10 @@ export async function placeOrderAction(formData: FormData): Promise<PlaceOrderRe
   }
 
   const { data: orderId, error } = await supabase.rpc("create_sales_order", {
-    p_items: items.map((i) => ({ product_id: i.productId, variant_id: i.variantId, qty: i.qty })),
-    p_fulfillment_method: fulfillmentMethod,
-    p_delivery_address: deliveryAddress,
-    p_payment_method: paymentMethod,
+    p_items: items.map((i) => ({ product_id: i.productId, variant_id: i.variantId ?? null, qty: i.qty })),
+    p_fulfillment_method: fields.fulfillmentMethod,
+    p_delivery_address: fields.deliveryAddress ?? "",
+    p_payment_method: fields.paymentMethod,
     p_payment_screenshot_path: screenshotPath,
   });
 

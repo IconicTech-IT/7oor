@@ -2,14 +2,20 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { categorySchema, type CategoryValues } from "@/lib/validators/category";
+import { categorySchema, categoryZodSchema, type CategoryValues } from "@/lib/validators/category";
+import { validateBoth, isUuid } from "@/lib/validate";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
 // RLS ("staff write categories") already restricts this to admin/staff regardless of
 // what the client sends — this is a second line of defense, not the only one.
 export async function createCategoryAction(input: CategoryValues): Promise<ActionResult> {
-  const data = await categorySchema.validate(input, { stripUnknown: true, abortEarly: true });
+  let data;
+  try {
+    data = await validateBoth(categorySchema, categoryZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
 
   const supabase = await createClient();
   const { data: row, error } = await supabase
@@ -32,7 +38,13 @@ export async function updateCategoryAction(
   id: string,
   input: CategoryValues,
 ): Promise<ActionResult> {
-  const data = await categorySchema.validate(input, { stripUnknown: true, abortEarly: true });
+  if (!isUuid(id)) return { error: "Invalid category id" };
+  let data;
+  try {
+    data = await validateBoth(categorySchema, categoryZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
 
   const supabase = await createClient();
   const { error } = await supabase
@@ -51,6 +63,7 @@ export async function updateCategoryAction(
 }
 
 export async function deleteCategoryAction(id: string): Promise<ActionResult> {
+  if (!isUuid(id)) return { error: "Invalid category id" };
   const supabase = await createClient();
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) return { error: error.message };

@@ -2,12 +2,19 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { supplierSchema, type SupplierValues } from "@/lib/validators/purchase";
+import { supplierSchema, supplierZodSchema, type SupplierValues } from "@/lib/validators/purchase";
+import { validateBoth } from "@/lib/validate";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
 export async function createSupplierAction(input: SupplierValues): Promise<ActionResult> {
-  const data = await supplierSchema.validate(input, { stripUnknown: true, abortEarly: true });
+  let data;
+  try {
+    data = await validateBoth(supplierSchema, supplierZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
+
   const supabase = await createClient();
   const { data: row, error } = await supabase
     .from("suppliers")

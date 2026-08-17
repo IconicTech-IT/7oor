@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { productSchema, type ProductFormValues } from "@/lib/validators/product";
+import { productSchema, productZodSchema, type ProductFormValues } from "@/lib/validators/product";
+import { validateBoth, isUuid } from "@/lib/validate";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
@@ -33,7 +34,13 @@ export async function saveProductAction(
   productId: string | null,
   input: ProductFormValues,
 ): Promise<ActionResult> {
-  const data = await productSchema.validate(input, { stripUnknown: true, abortEarly: true });
+  if (productId && !isUuid(productId)) return { error: "Invalid product id" };
+  let data;
+  try {
+    data = await validateBoth(productSchema, productZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
   const supabase = await createClient();
 
   let id = productId;
@@ -97,6 +104,7 @@ export async function saveProductAction(
 }
 
 export async function deleteProductAction(id: string): Promise<ActionResult> {
+  if (!isUuid(id)) return { error: "Invalid product id" };
   const supabase = await createClient();
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) return { error: error.message };

@@ -2,12 +2,22 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
-import { purchaseOrderSchema, type PurchaseOrderValues } from "@/lib/validators/purchase";
+import {
+  purchaseOrderSchema,
+  purchaseOrderZodSchema,
+  type PurchaseOrderValues,
+} from "@/lib/validators/purchase";
+import { validateBoth, isUuid } from "@/lib/validate";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
 export async function createPurchaseOrderAction(input: PurchaseOrderValues): Promise<ActionResult> {
-  const data = await purchaseOrderSchema.validate(input, { stripUnknown: true, abortEarly: true });
+  let data;
+  try {
+    data = await validateBoth(purchaseOrderSchema, purchaseOrderZodSchema, input);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
   const supabase = await createClient();
 
   const { data: po, error: poError } = await supabase
@@ -33,6 +43,7 @@ export async function createPurchaseOrderAction(input: PurchaseOrderValues): Pro
 }
 
 export async function markPurchaseOrderedAction(id: string): Promise<ActionResult> {
+  if (!isUuid(id)) return { error: "Invalid purchase order id" };
   const supabase = await createClient();
   const { error } = await supabase
     .from("purchase_orders")
@@ -48,6 +59,7 @@ export async function markPurchaseOrderedAction(id: string): Promise<ActionResul
 // inventory_movements rows staff have no direct insert access to, keeping FIFO cost
 // basis tied to what was actually receipted.
 export async function receivePurchaseOrderAction(id: string): Promise<ActionResult> {
+  if (!isUuid(id)) return { error: "Invalid purchase order id" };
   const supabase = await createClient();
   const { error } = await supabase.rpc("receive_purchase_order", { p_purchase_order_id: id });
   if (error) return { error: error.message };
