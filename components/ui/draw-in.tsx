@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 
 const DRAWABLE_SELECTOR = "path, circle, line, polyline, polygon, rect, ellipse";
@@ -11,6 +11,8 @@ type Props = {
   duration?: number;
   delay?: number;
   once?: boolean;
+  /** Replay the draw-in whenever the closest `.group` ancestor (icon or its paired label) is hovered/focused. */
+  replayOnHover?: boolean;
 };
 
 /**
@@ -19,20 +21,23 @@ type Props = {
  * stroke-dashoffset with the Web Animations API, so it works without forking icon
  * components into motion.path. Respects prefers-reduced-motion (shows instantly).
  */
-export function DrawIn({ children, className, duration = 900, delay = 0, once = true }: Props) {
+export function DrawIn({
+  children,
+  className,
+  duration = 900,
+  delay = 0,
+  once = true,
+  replayOnHover = false,
+}: Props) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once, amount: 0.4 });
   const played = useRef(false);
 
-  useEffect(() => {
-    if (!inView || !ref.current) return;
-    if (once && played.current) return;
-
+  const play = useCallback(() => {
+    if (!ref.current) return;
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const elements = ref.current.querySelectorAll<SVGGeometryElement>(DRAWABLE_SELECTOR);
     if (elements.length === 0) return;
-
-    played.current = true;
 
     elements.forEach((el, i) => {
       if (prefersReduced) {
@@ -46,6 +51,7 @@ export function DrawIn({ children, className, duration = 900, delay = 0, once = 
       } catch {
         return;
       }
+      el.getAnimations().forEach((a) => a.cancel());
       el.style.strokeDasharray = `${length}`;
       el.style.strokeDashoffset = `${length}`;
       el.animate(
@@ -58,7 +64,25 @@ export function DrawIn({ children, className, duration = 900, delay = 0, once = 
         },
       );
     });
-  }, [inView, once, duration, delay]);
+  }, [duration, delay]);
+
+  useEffect(() => {
+    if (!inView) return;
+    if (once && played.current) return;
+    played.current = true;
+    play();
+  }, [inView, once, play]);
+
+  useEffect(() => {
+    if (!replayOnHover || !ref.current) return;
+    const group = ref.current.closest(".group") ?? ref.current;
+    group.addEventListener("mouseenter", play);
+    group.addEventListener("focusin", play);
+    return () => {
+      group.removeEventListener("mouseenter", play);
+      group.removeEventListener("focusin", play);
+    };
+  }, [replayOnHover, play]);
 
   return (
     <span ref={ref} className={className}>

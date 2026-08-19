@@ -1,34 +1,40 @@
 import "server-only";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/lib/database.types";
+import { putObject, publicUrlFor, getSignedUrl as getR2SignedUrl, deleteObject, type R2Prefix } from "@/lib/r2";
+import { compressForStorage } from "@/lib/image-compress";
+
+/** Uploads a product image (public bucket) and returns its public URL. Compressed to WebP first. */
+export async function uploadProductImage(file: File): Promise<string> {
+  const { buffer, contentType, ext } = await compressForStorage(file);
+  const key = `product-images/${crypto.randomUUID()}.${ext}`;
+  await putObject(key, buffer, contentType);
+  return publicUrlFor(key);
+}
 
 /**
- * Uploads a user-owned file under `${userId}/...` (required by the bucket's RLS insert
- * policy) and returns the storage object path — not a public URL, since these buckets are
- * private. Use getSignedUrl() to produce a shareable link when needed (email, admin view).
+ * Uploads a user-owned file under `${bucket}/${userId}/...` and returns the object key — not a
+ * public URL, since these are private. Use getSignedUrl() to produce a shareable link when
+ * needed (email, admin view). Compressed to WebP first when the upload is an image.
  */
 export async function uploadUserFile(
-  supabase: SupabaseClient<Database>,
-  bucket: "request-attachments" | "payment-screenshots",
+  bucket: Extract<R2Prefix, "request-attachments" | "payment-screenshots">,
   userId: string,
   file: File,
 ): Promise<string> {
-  const ext = file.name.includes(".") ? file.name.split(".").pop() : "bin";
-  const path = `${userId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-  const { error } = await supabase.storage
-    .from(bucket)
-    .upload(path, file, { contentType: file.type || "application/octet-stream" });
-  if (error) throw error;
-  return path;
+  const { buffer, contentType, ext } = await compressForStorage(file);
+  const key = `${bucket}/${userId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  await putObject(key, buffer, contentType);
+  return key;
 }
 
-export async function getSignedUrl(
-  supabase: SupabaseClient<Database>,
-  bucket: "request-attachments" | "payment-screenshots" | "product-images",
-  path: string,
-  expiresInSeconds = 60 * 60 * 24 * 7,
-): Promise<string | null> {
-  const { data, error } = await supabase.storage.from(bucket).createSignedUrl(path, expiresInSeconds);
-  if (error) return null;
-  return data.signedUrl;
+export async function getSignedUrl(key: string, expiresInSeconds = 60 * 60 * 24 * 7): Promise<string | null> {
+  try {
+    return await getR2SignedUrl(key, expiresInSeconds);
+  } catch (err) {
+    console.error("getSignedUrl:", err);
+    return null;
+  }
+}
+
+export async function deleteStoredFile(key: string): Promise<void> {
+  await deleteObject(key);
 }

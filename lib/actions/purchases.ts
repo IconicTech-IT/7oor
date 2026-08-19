@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import {
   purchaseOrderSchema,
@@ -65,5 +65,6 @@ export async function receivePurchaseOrderAction(id: string): Promise<ActionResu
   if (error) return { error: error.message };
   revalidatePath(`/admin/purchases/${id}`);
   revalidatePath("/admin/inventory");
+  revalidateTag("availability", "max");
   return { success: true };
 }

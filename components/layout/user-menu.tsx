@@ -5,6 +5,7 @@ import { User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { Tooltip } from "@/components/ui/tooltip";
 
 type Props = {
   user: { email: string; role: string | null } | null;
@@ -45,13 +46,15 @@ export function UserMenu({ user }: Props) {
 
   return (
     <div className="relative" ref={ref}>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-foreground/5 text-foreground hover:bg-foreground/10"
-        aria-label={t("account")}
-      >
-        <User className="h-5 w-5" />
-      </button>
+      <Tooltip label={t("account")}>
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-foreground/5 text-foreground hover:bg-foreground/10"
+          aria-label={t("account")}
+        >
+          <User className="h-5 w-5" />
+        </button>
+      </Tooltip>
       {open && (
         <div className="absolute end-0 top-12 z-50 w-56 overflow-hidden rounded-xl border border-border bg-card py-1.5 shadow-xl">
           <p className="truncate px-4 py-2 text-xs text-muted">{user.email}</p>

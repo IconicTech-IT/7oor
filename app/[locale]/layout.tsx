@@ -6,7 +6,6 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SiteFooter } from "@/components/layout/site-footer";
-import { AosInit } from "@/components/layout/aos-init";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ToastProvider } from "@/components/layout/toast-provider";
 import "../globals.css";
@@ -63,7 +62,6 @@ export default async function LocaleLayout({
       <body className="flex min-h-full flex-col bg-background text-foreground">
         <ThemeProvider>
           <NextIntlClientProvider>
-            <AosInit />
             <SiteHeader />
             <main className="flex-1">{children}</main>
             <SiteFooter />

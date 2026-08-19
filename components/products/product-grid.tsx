@@ -15,7 +15,7 @@ export function ProductGrid({ children }: { children: ReactNode }) {
     >
       {Array.isArray(children)
         ? children.map((child, i) => (
-            <motion.div key={i} variants={fade}>
+            <motion.div key={i} className="h-full" variants={fade}>
               {child}
             </motion.div>
           ))

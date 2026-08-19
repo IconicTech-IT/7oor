@@ -9,6 +9,8 @@ import {
   Settings,
   MessageSquareText,
   Users,
+  HardDrive,
+  Building2,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -25,8 +27,10 @@ const NAV: NavItem[] = [
   { href: "/admin/requests", labelKey: "requests", icon: MessageSquareText, roles: ["admin", "staff"] },
   { href: "/admin/inventory", labelKey: "inventory", icon: Warehouse, roles: ["admin", "staff"] },
   { href: "/admin/purchases", labelKey: "purchases", icon: Truck, roles: ["admin", "staff"] },
+  { href: "/admin/suppliers", labelKey: "suppliers", icon: Building2, roles: ["admin", "staff"] },
   { href: "/admin/accounting", labelKey: "accounting", icon: Wallet, roles: ["admin"] },
   { href: "/admin/staff", labelKey: "staff", icon: Users, roles: ["admin"] },
+  { href: "/admin/storage", labelKey: "storage", icon: HardDrive, roles: ["admin"] },
   { href: "/admin/settings", labelKey: "settings", icon: Settings, roles: ["admin"] },
 ];
 

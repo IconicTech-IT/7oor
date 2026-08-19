@@ -57,6 +57,10 @@ export async function proxy(request: NextRequest) {
     if (path.startsWith("/admin/staff") && profile.role !== "admin") {
       return NextResponse.redirect(new URL("/admin", request.url));
     }
+
+    if (path.startsWith("/admin/storage") && profile.role !== "admin") {
+      return NextResponse.redirect(new URL("/admin", request.url));
+    }
   }
 
   if (

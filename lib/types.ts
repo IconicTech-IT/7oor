@@ -4,6 +4,7 @@ export type Category = Tables<"categories"> & { children?: Category[] };
 export type Product = Tables<"products">;
 export type ProductVariant = Tables<"product_variants">;
 export type ComboComponent = Tables<"product_combo_components">;
+export type Supplier = Tables<"suppliers">;
 
 export type ProductWithRelations = Product & {
   variants: ProductVariant[];

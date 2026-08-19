@@ -38,7 +38,7 @@ export async function submitRequestAction(formData: FormData): Promise<RequestAc
   let attachmentPath: string | null = null;
   if (file instanceof File && file.size > 0) {
     try {
-      attachmentPath = await uploadUserFile(supabase, "request-attachments", user.id, file);
+      attachmentPath = await uploadUserFile("request-attachments", user.id, file);
     } catch (err) {
       console.error("submitRequestAction upload:", err);
       return { error: "Failed to upload attachment" };
@@ -63,9 +63,7 @@ export async function submitRequestAction(formData: FormData): Promise<RequestAc
   }
 
   try {
-    const attachmentLink = attachmentPath
-      ? await getSignedUrl(supabase, "request-attachments", attachmentPath)
-      : null;
+    const attachmentLink = attachmentPath ? await getSignedUrl(attachmentPath) : null;
 
     await sendNotificationEmail({
       subject: `New request from ${data.name}`,

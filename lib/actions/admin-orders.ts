@@ -1,7 +1,8 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getSignedUrl } from "@/lib/storage";
 import { isUuid } from "@/lib/validate";
 
 export type ActionResult = { success?: boolean; error?: string };
@@ -14,6 +15,7 @@ export async function confirmOrderAction(orderId: string): Promise<ActionResult>
   const { error } = await supabase.rpc("confirm_sales_order", { p_sales_order_id: orderId });
   if (error) return { error: error.message };
   revalidatePath("/admin/orders");
+  revalidateTag("availability", "max");
   return { success: true };
 }
 
@@ -25,6 +27,7 @@ export async function markOrderDoneAction(orderId: string): Promise<ActionResult
   revalidatePath("/admin/orders");
   revalidatePath("/admin/inventory");
   revalidatePath("/admin/accounting");
+  revalidateTag("availability", "max");
   return { success: true };
 }
 
@@ -34,15 +37,11 @@ export async function cancelOrderAction(orderId: string): Promise<ActionResult> 
   const { error } = await supabase.rpc("cancel_sales_order", { p_sales_order_id: orderId });
   if (error) return { error: error.message };
   revalidatePath("/admin/orders");
+  revalidateTag("availability", "max");
   return { success: true };
 }
 
 export async function getPaymentScreenshotUrlAction(path: string): Promise<string | null> {
   if (typeof path !== "string" || path.length === 0 || path.includes("..")) return null;
-  const supabase = await createClient();
-  const { data, error } = await supabase.storage
-    .from("payment-screenshots")
-    .createSignedUrl(path, 60 * 60);
-  if (error) return null;
-  return data.signedUrl;
+  return getSignedUrl(path, 60 * 60);
 }

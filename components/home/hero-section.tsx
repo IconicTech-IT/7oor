@@ -7,7 +7,7 @@ export async function HeroSection() {
   const t = await getTranslations("home.hero");
 
   return (
-    <div className="relative flex h-full w-full items-center overflow-hidden bg-foreground text-background">
+    <div className="relative flex min-h-screen w-full items-center overflow-hidden bg-foreground py-20 text-background">
       <div className="pointer-events-none absolute -end-32 -top-32 h-96 w-96 rounded-full bg-primary/40 blur-3xl" />
       <div className="pointer-events-none absolute -start-24 bottom-0 h-80 w-80 rounded-full bg-accent/30 blur-3xl" />
 

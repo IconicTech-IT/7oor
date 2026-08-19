@@ -44,6 +44,5 @@ export async function updateRequestStatusAction(
 
 export async function getRequestAttachmentUrlAction(path: string): Promise<string | null> {
   if (typeof path !== "string" || path.length === 0 || path.includes("..")) return null;
-  const supabase = await createClient();
-  return getSignedUrl(supabase, "request-attachments", path);
+  return getSignedUrl(path);
 }

@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { adjustStockSchema, adjustStockZodSchema } from "@/lib/validators/inventory";
 import { validateBoth } from "@/lib/validate";
@@ -36,5 +36,6 @@ export async function adjustStockAction(input: {
   const { error } = await supabase.rpc("adjust_stock", args as unknown as { p_product_id: string; p_variant_id: string; p_direction: string; p_qty: number; p_reason: string; p_notes: string });
   if (error) return { error: error.message };
   revalidatePath("/admin/inventory");
+  revalidateTag("availability", "max");
   return { success: true };
 }

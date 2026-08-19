@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { MapPin, Phone, Clock } from "lucide-react";
 import { ContactForm } from "@/components/contact/contact-form";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export default async function ContactPage() {
   const t = await getTranslations("contact");
@@ -13,7 +14,7 @@ export default async function ContactPage() {
       </div>
 
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
-        <div data-aos="fade-up" className="flex flex-col gap-6">
+        <ScrollReveal direction="left" className="flex flex-col gap-6">
           <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6">
             <div className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
@@ -37,7 +38,7 @@ export default async function ContactPage() {
               <Clock className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
                 <p className="text-sm font-bold">{t("hours")}</p>
-                <p className="text-sm text-muted">9:00 AM – 11:00 PM</p>
+                <p className="text-sm text-muted">{t("hoursValue")}</p>
               </div>
             </div>
           </div>
@@ -47,14 +48,15 @@ export default async function ContactPage() {
               title="map"
               className="h-full w-full"
               loading="lazy"
+              sandbox="allow-scripts allow-same-origin allow-popups"
               src="https://www.google.com/maps?q=Cairo,Egypt&output=embed"
             />
           </div>
-        </div>
+        </ScrollReveal>
 
-        <div data-aos="fade-up" className="rounded-2xl border border-border bg-card p-6">
+        <ScrollReveal direction="right" delay={0.12} className="rounded-2xl border border-border bg-card p-6">
           <ContactForm />
-        </div>
+        </ScrollReveal>
       </div>
     </div>
   );

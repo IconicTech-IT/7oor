@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { categorySchema, categoryZodSchema, type CategoryValues } from "@/lib/validators/category";
 import { validateBoth, isUuid } from "@/lib/validate";
@@ -31,6 +31,7 @@ export async function createCategoryAction(input: CategoryValues): Promise<Actio
 
   if (error) return { error: error.message };
   revalidatePath("/admin/categories");
+  revalidateTag("categories", "max");
   return { success: true, id: row.id };
 }
 
@@ -59,6 +60,7 @@ export async function updateCategoryAction(
 
   if (error) return { error: error.message };
   revalidatePath("/admin/categories");
+  revalidateTag("categories", "max");
   return { success: true };
 }
 
@@ -68,5 +70,6 @@ export async function deleteCategoryAction(id: string): Promise<ActionResult> {
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/categories");
+  revalidateTag("categories", "max");
   return { success: true };
 }

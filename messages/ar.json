@@ -77,10 +77,14 @@
     "optional": "اختياري",
     "confirm": "تأكيد",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "toggleThemeLight": "التبديل للوضع الفاتح",
+    "toggleThemeDark": "التبديل للوضع الداكن",
+    "switchLanguage": "تغيير اللغة"
   },
   "products": {
     "title": "المنتجات",
+    "viewDetails": "التفاصيل",
     "filters": {
       "category": "القسم",
       "allCategories": "كل الأقسام",
@@ -169,6 +173,7 @@
     "address": "العنوان",
     "phone": "التليفون",
     "hours": "مواعيد العمل",
+    "hoursValue": "9:00 صباحا – 11:00 مساءا",
     "name": "الاسم",
     "contactInfo": "الإيميل أو رقم الموبايل",
     "message": "الرسالة",
@@ -207,7 +212,9 @@
       "purchases": "المشتريات",
       "accounting": "الحسابات",
       "settings": "الإعدادات",
-      "staff": "الموظفين"
+      "staff": "الموظفين",
+      "storage": "التخزين",
+      "suppliers": "الموردين"
     },
     "common": {
       "selectPlaceholder": "— اختر —",
@@ -433,10 +440,17 @@
         "createOrder": "إنشاء أمر الشراء"
       },
       "supplierForm": {
+        "pageTitle": "الموردين",
+        "pageSubtitle": "إدارة الموردين اللي بتشتري منهم البضاعة.",
         "name": "الاسم",
         "phone": "الهاتف",
         "email": "البريد الإلكتروني",
-        "addSupplier": "إضافة مورد"
+        "address": "العنوان",
+        "addSupplier": "إضافة مورد",
+        "toastUpdated": "تم تحديث المورد",
+        "toastDeleted": "تم حذف المورد",
+        "deleteConfirm": "هل تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.",
+        "empty": "لا يوجد موردين حتى الآن."
       },
       "toastSupplierAdded": "تم إضافة المورد"
     },
@@ -492,6 +506,32 @@
       "deliveryFeeLabel": "رسوم التوصيل (جنيه)",
       "saving": "جاري الحفظ...",
       "toastUpdated": "تم تحديث رسوم التوصيل"
+    },
+    "storage": {
+      "title": "التخزين",
+      "subtitle": "إدارة الملفات المرفوعة وتحرير مساحة تخزين.",
+      "stats": {
+        "total": "إجمالي المستخدم",
+        "fileCount": "{count, plural, one {ملف واحد} other {# ملفات}}"
+      },
+      "orphanedImages": "صور منتجات غير مستخدمة",
+      "orphanedImagesHint": "تم رفعها لكنها لم تعد مرتبطة بأي منتج أو خيار — آمن حذفها.",
+      "noOrphanedImages": "لا توجد صور غير مستخدمة. كل شيء مرتب.",
+      "staleScreenshots": "إيصالات دفع قديمة",
+      "staleAttachments": "مرفقات طلبات قديمة",
+      "staleHint": "من طلبات مكتملة أو ملغاة من أكثر من 90 يومًا — راجعها قبل الحذف.",
+      "noStaleFiles": "لا يوجد شيء قديم بما يكفي للحذف حاليًا.",
+      "selectAll": "تحديد الكل",
+      "deselectAll": "إلغاء التحديد",
+      "deleteSelected": "{count, plural, =0 {حذف} other {حذف (#)}}",
+      "deleteConfirm": "{count, plural, one {هل تريد حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.} other {هل تريد حذف هذه الـ # ملفات؟ لا يمكن التراجع عن هذا الإجراء.}}",
+      "deleted": "{count, plural, one {تم حذف ملف واحد} other {تم حذف # ملفات}}",
+      "table": {
+        "size": "الحجم",
+        "closedAt": "تاريخ الإغلاق",
+        "order": "الطلب",
+        "request": "الطلب الخاص"
+      }
     }
   }
 }

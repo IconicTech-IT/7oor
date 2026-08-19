@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { unstable_cache } from "next/cache";
+import { createPublicClient } from "@/lib/supabase/public";
 
 export type AvailabilityMap = Map<string, number>;
 
@@ -6,75 +7,44 @@ function key(productId: string, variantId: string | null) {
   return `${productId}:${variantId ?? ""}`;
 }
 
+// Postgres int4 max — get_availability_snapshot()'s stand-in for "unlimited" (force-
+// available combos, or combos with no components), converted to real Infinity below.
+const UNLIMITED = 2147483647;
+
 /**
  * On-hand minus reserved (open sales orders) for every product/variant, plus combo
- * products resolved from their components (min over components of floor(available/qty),
- * or always-available if combo_force_available is set). This is a soft storefront UX
- * signal, not a hard checkout block — per the spec, inventory is only actually deducted
- * when staff mark an order Done, so a slight oversell that staff resolve manually is
- * an accepted trade-off, not a bug.
+ * products resolved from their components. Computed entirely inside
+ * get_availability_snapshot() (SECURITY DEFINER, granted to anon+authenticated) —
+ * stock_lots/sales_orders/sales_order_items are RLS-locked to admin/staff/order-owner,
+ * so a plain anon-client read of those tables always returned zero rows and made
+ * every product look permanently out of stock. The RPC returns only aggregated
+ * available-quantity numbers, never raw lot rows (which carry unit_cost — real COGS
+ * data that must stay private). This is a soft storefront UX signal, not a hard
+ * checkout block — create_sales_order() re-checks stock authoritatively server-side.
  */
-export async function getAvailabilityMap(): Promise<AvailabilityMap> {
-  const supabase = await createClient();
-
-  const [{ data: lots }, { data: openOrders }, { data: comboProducts }] = await Promise.all([
-    supabase.from("stock_lots").select("product_id, variant_id, qty_remaining"),
-    supabase.from("sales_orders").select("id").in("status", ["new", "confirmed"]),
-    supabase.from("products").select("id, combo_force_available").eq("type", "combo"),
-  ]);
-
-  const openOrderIds = (openOrders ?? []).map((o) => o.id);
-  const { data: reservedItems } =
-    openOrderIds.length > 0
-      ? await supabase
-          .from("sales_order_items")
-          .select("product_id, variant_id, qty")
-          .in("sales_order_id", openOrderIds)
-      : { data: [] as { product_id: string; variant_id: string | null; qty: number }[] };
-
-  const onHand = new Map<string, number>();
-  for (const lot of lots ?? []) {
-    const k = key(lot.product_id, lot.variant_id);
-    onHand.set(k, (onHand.get(k) ?? 0) + lot.qty_remaining);
-  }
-  const reserved = new Map<string, number>();
-  for (const item of reservedItems ?? []) {
-    const k = key(item.product_id, item.variant_id);
-    reserved.set(k, (reserved.get(k) ?? 0) + item.qty);
-  }
-
-  const map: AvailabilityMap = new Map();
-  for (const k of new Set([...onHand.keys(), ...reserved.keys()])) {
-    map.set(k, (onHand.get(k) ?? 0) - (reserved.get(k) ?? 0));
-  }
-
-  if (comboProducts && comboProducts.length > 0) {
-    const comboIds = comboProducts.map((c) => c.id);
-    const { data: components } = await supabase
-      .from("product_combo_components")
-      .select("combo_product_id, component_product_id, component_variant_id, qty")
-      .in("combo_product_id", comboIds);
-
-    for (const combo of comboProducts) {
-      if (combo.combo_force_available) {
-        map.set(key(combo.id, null), Number.POSITIVE_INFINITY);
-        continue;
-      }
-      const comboComponents = (components ?? []).filter((c) => c.combo_product_id === combo.id);
-      if (comboComponents.length === 0) {
-        map.set(key(combo.id, null), Number.POSITIVE_INFINITY);
-        continue;
-      }
-      let minAvail = Number.POSITIVE_INFINITY;
-      for (const c of comboComponents) {
-        const compAvail = map.get(key(c.component_product_id, c.component_variant_id)) ?? 0;
-        minAvail = Math.min(minAvail, Math.floor(compAvail / c.qty));
-      }
-      map.set(key(combo.id, null), minAvail);
+const getAvailabilityRecordCached = unstable_cache(
+  async (): Promise<Record<string, number>> => {
+    const supabase = createPublicClient();
+    const { data, error } = await supabase.rpc("get_availability_snapshot");
+    if (error) {
+      console.error("getAvailabilityRecordCached:", error.message);
+      return {};
     }
-  }
+    const record: Record<string, number> = {};
+    for (const row of data ?? []) {
+      record[key(row.product_id, row.variant_id)] = row.available;
+    }
+    return record;
+  },
+  ["availability-map"],
+  { revalidate: 60, tags: ["availability"] },
+);
 
-  return map;
+export async function getAvailabilityMap(): Promise<AvailabilityMap> {
+  const record = await getAvailabilityRecordCached();
+  return new Map(
+    Object.entries(record).map(([k, v]) => [k, v >= UNLIMITED ? Number.POSITIVE_INFINITY : v]),
+  );
 }
 
 export function getAvailability(

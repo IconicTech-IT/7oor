@@ -4,15 +4,17 @@ import { ImageOff } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { formatEGP } from "@/lib/currency";
 import { localized } from "@/lib/types";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import type { ProductWithRelations } from "@/lib/types";
 
 export async function ProductCard({
   product,
-  aos,
+  revealDelay,
   availableQty,
 }: {
   product: ProductWithRelations;
-  aos?: string;
+  /** Wraps the card in a GSAP ScrollTrigger reveal with this stagger delay (seconds). Omit to render plain. */
+  revealDelay?: number;
   /** Omit when availability wasn't computed for this listing (treated as always in stock). */
   availableQty?: number;
 }) {
@@ -30,11 +32,10 @@ export async function ProductCard({
   const isCustom = product.type === "custom_request";
   const isOutOfStock = availableQty !== undefined && availableQty <= 0;
 
-  return (
+  const card = (
     <Link
       href={`/products/${product.slug}`}
-      data-aos={aos}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg"
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card transition-shadow hover:shadow-lg"
     >
       <div className="relative aspect-square w-full overflow-hidden bg-background">
         {product.image_url ? (
@@ -77,5 +78,13 @@ export async function ProductCard({
         </div>
       </div>
     </Link>
+  );
+
+  if (revealDelay === undefined) return card;
+
+  return (
+    <ScrollReveal className="h-full" delay={revealDelay}>
+      {card}
+    </ScrollReveal>
   );
 }

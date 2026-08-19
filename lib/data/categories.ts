@@ -1,11 +1,16 @@
-import { createClient } from "@/lib/supabase/server";
+import { unstable_cache } from "next/cache";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Category } from "@/lib/types";
 
-export async function getAllCategoriesFlat(): Promise<Category[]> {
-  const supabase = await createClient();
-  const { data } = await supabase.from("categories").select("*").order("sort_order");
-  return data ?? [];
-}
+export const getAllCategoriesFlat = unstable_cache(
+  async (): Promise<Category[]> => {
+    const supabase = createPublicClient();
+    const { data } = await supabase.from("categories").select("*").order("sort_order");
+    return data ?? [];
+  },
+  ["categories-flat"],
+  { revalidate: 300, tags: ["categories"] },
+);
 
 export async function getCategoryTree(): Promise<Category[]> {
   const categories = await getAllCategoriesFlat();
@@ -16,11 +21,15 @@ export async function getCategoryTree(): Promise<Category[]> {
   }));
 }
 
-export async function getCategoryBySlug(slug: string): Promise<Category | null> {
-  const supabase = await createClient();
-  const { data } = await supabase.from("categories").select("*").eq("slug", slug).single();
-  return data ?? null;
-}
+export const getCategoryBySlug = unstable_cache(
+  async (slug: string): Promise<Category | null> => {
+    const supabase = createPublicClient();
+    const { data } = await supabase.from("categories").select("*").eq("slug", slug).single();
+    return data ?? null;
+  },
+  ["category-by-slug"],
+  { revalidate: 300, tags: ["categories"] },
+);
 
 /** Returns [category.id, ...descendantIds] for a given slug — used to filter products by a top-level category. */
 export async function getCategoryIdsForSlug(slug: string): Promise<string[]> {

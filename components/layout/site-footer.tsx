@@ -48,14 +48,14 @@ export async function SiteFooter() {
             </li>
             <li className="flex items-center gap-2">
               <Clock className="h-4 w-4 shrink-0" />
-              <span>9:00 AM – 11:00 PM</span>
+              <span>{tContact("hoursValue")}</span>
             </li>
           </ul>
         </div>
       </div>
 
       <div className="border-t border-border py-4 text-center text-xs text-muted">
-        © {year} 7oor Store — {t("rights")}
+        © {year} <span dir="ltr">7oor Store</span> — {t("rights")}
       </div>
     </footer>
   );

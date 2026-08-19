@@ -4,24 +4,40 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { supplierSchema } from "@/lib/validators/purchase";
-import { createSupplierAction } from "@/lib/actions/suppliers";
+import { createSupplierAction, updateSupplierAction, type ActionResult } from "@/lib/actions/suppliers";
+import type { Supplier } from "@/lib/types";
 
 const inputClass =
   "w-full rounded-lg border border-border px-3 py-2 text-sm focus:border-primary focus:outline-none";
 
-export function SupplierForm({ onDone }: { onDone?: (createdId?: string) => void }) {
+type Props = {
+  initial?: Supplier;
+  onDone?: (createdId?: string) => void;
+};
+
+export function SupplierForm({ initial, onDone }: Props) {
+  const isEdit = Boolean(initial);
   const t = useTranslations("admin.purchases");
+  const tCommon = useTranslations("common");
 
   return (
     <Formik
-      initialValues={{ name: "", phone: "", email: "", address: "" }}
+      initialValues={{
+        name: initial?.name ?? "",
+        phone: initial?.phone ?? "",
+        email: initial?.email ?? "",
+        address: initial?.address ?? "",
+      }}
       validationSchema={supplierSchema}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        const result = await createSupplierAction(values);
+        const result: ActionResult = isEdit
+          ? await updateSupplierAction(initial!.id, values)
+          : await createSupplierAction(values);
+
         if (result.error) {
           toast.error(result.error);
         } else {
-          toast.success(t("toastSupplierAdded"));
+          toast.success(isEdit ? t("supplierForm.toastUpdated") : t("toastSupplierAdded"));
           resetForm();
           onDone?.(result.id);
         }
@@ -29,7 +45,7 @@ export function SupplierForm({ onDone }: { onDone?: (createdId?: string) => void
       }}
     >
       {({ isSubmitting }) => (
-        <Form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:items-end">
+        <Form className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5 lg:items-end">
           <div>
             <label className="mb-1 block text-xs font-semibold text-muted">{t("supplierForm.name")}</label>
             <Field name="name" className={inputClass} />
@@ -42,14 +58,30 @@ export function SupplierForm({ onDone }: { onDone?: (createdId?: string) => void
           <div>
             <label className="mb-1 block text-xs font-semibold text-muted">{t("supplierForm.email")}</label>
             <Field name="email" dir="ltr" className={inputClass} />
+            <ErrorMessage name="email" component="p" className="mt-1 text-xs text-danger" />
           </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
-          >
-            {t("supplierForm.addSupplier")}
-          </button>
+          <div>
+            <label className="mb-1 block text-xs font-semibold text-muted">{t("supplierForm.address")}</label>
+            <Field name="address" className={inputClass} />
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex-1 rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover disabled:opacity-60"
+            >
+              {isEdit ? tCommon("save") : t("supplierForm.addSupplier")}
+            </button>
+            {isEdit && (
+              <button
+                type="button"
+                onClick={() => onDone?.()}
+                className="rounded-lg border border-border px-4 py-2 text-sm font-semibold"
+              >
+                {tCommon("cancel")}
+              </button>
+            )}
+          </div>
         </Form>
       )}
     </Formik>

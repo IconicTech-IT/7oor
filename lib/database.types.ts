@@ -856,6 +856,14 @@ export type Database = {
         }
         Returns: number
       }
+      get_availability_snapshot: {
+        Args: never
+        Returns: {
+          available: number
+          product_id: string
+          variant_id: string
+        }[]
+      }
       get_available_qty: {
         Args: { p_product_id: string; p_variant_id: string }
         Returns: number
@@ -998,3 +1006,9 @@ export type CompositeTypes<
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

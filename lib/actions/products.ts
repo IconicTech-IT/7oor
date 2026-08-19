@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { productSchema, productZodSchema, type ProductFormValues } from "@/lib/validators/product";
 import { validateBoth, isUuid } from "@/lib/validate";
@@ -100,6 +100,7 @@ export async function saveProductAction(
   }
 
   revalidatePath("/admin/products");
+  revalidateTag("products", "max");
   return { success: true, id: id! };
 }
 
@@ -109,5 +110,6 @@ export async function deleteProductAction(id: string): Promise<ActionResult> {
   const { error } = await supabase.from("products").delete().eq("id", id);
   if (error) return { error: error.message };
   revalidatePath("/admin/products");
+  revalidateTag("products", "max");
   return { success: true };
 }

@@ -1,4 +1,3 @@
-import { GsapStackSections } from "@/components/home/gsap-stack-sections";
 import { HeroSection } from "@/components/home/hero-section";
 import { CategoriesSection } from "@/components/home/categories-section";
 import { FeaturedSection } from "@/components/home/featured-section";
@@ -17,13 +16,13 @@ export default async function HomePage() {
     getAvailabilityMap(),
   ]);
 
-  const sections = [
-    <HeroSection key="hero" />,
-    <CategoriesSection key="categories" categories={categories} />,
-    <FeaturedSection key="featured" products={featuredProducts} availabilityMap={availabilityMap} />,
-    <ServicesSection key="services" />,
-    <CtaSection key="cta" />,
-  ];
-
-  return <GsapStackSections sections={sections} />;
+  return (
+    <>
+      <HeroSection />
+      <CategoriesSection categories={categories} />
+      <FeaturedSection products={featuredProducts} availabilityMap={availabilityMap} />
+      <ServicesSection />
+      <CtaSection />
+    </>
+  );
 }

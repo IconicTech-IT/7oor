@@ -77,10 +77,14 @@
     "optional": "Optional",
     "confirm": "Confirm",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "toggleThemeLight": "Switch to light mode",
+    "toggleThemeDark": "Switch to dark mode",
+    "switchLanguage": "Switch language"
   },
   "products": {
     "title": "Products",
+    "viewDetails": "View details",
     "filters": {
       "category": "Category",
       "allCategories": "All categories",
@@ -169,6 +173,7 @@
     "address": "Address",
     "phone": "Phone",
     "hours": "Working hours",
+    "hoursValue": "9:00 AM – 11:00 PM",
     "name": "Name",
     "contactInfo": "Email or phone",
     "message": "Message",
@@ -207,7 +212,9 @@
       "purchases": "Purchases",
       "accounting": "Accounting",
       "settings": "Settings",
-      "staff": "Staff"
+      "staff": "Staff",
+      "storage": "Storage",
+      "suppliers": "Suppliers"
     },
     "common": {
       "selectPlaceholder": "— Select —",
@@ -433,10 +440,17 @@
         "createOrder": "Create purchase order"
       },
       "supplierForm": {
+        "pageTitle": "Suppliers",
+        "pageSubtitle": "Manage the suppliers you order stock from.",
         "name": "Name",
         "phone": "Phone",
         "email": "Email",
-        "addSupplier": "Add supplier"
+        "address": "Address",
+        "addSupplier": "Add supplier",
+        "toastUpdated": "Supplier updated",
+        "toastDeleted": "Supplier deleted",
+        "deleteConfirm": "Delete this supplier? This cannot be undone.",
+        "empty": "No suppliers yet."
       },
       "toastSupplierAdded": "Supplier added"
     },
@@ -492,6 +506,32 @@
       "deliveryFeeLabel": "Delivery fee (EGP)",
       "saving": "Saving...",
       "toastUpdated": "Delivery fee updated"
+    },
+    "storage": {
+      "title": "Storage",
+      "subtitle": "Manage uploaded files and free up space.",
+      "stats": {
+        "total": "Total used",
+        "fileCount": "{count, plural, one {# file} other {# files}}"
+      },
+      "orphanedImages": "Unused product images",
+      "orphanedImagesHint": "Uploaded but no longer linked to any product or variant — safe to delete.",
+      "noOrphanedImages": "No unused images. Nice and tidy.",
+      "staleScreenshots": "Old payment screenshots",
+      "staleAttachments": "Old request attachments",
+      "staleHint": "From orders/requests closed more than 90 days ago — review before deleting.",
+      "noStaleFiles": "Nothing old enough to clean up yet.",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "deleteSelected": "{count, plural, =0 {Delete} other {Delete (#)}}",
+      "deleteConfirm": "{count, plural, one {Delete this file? This cannot be undone.} other {Delete these # files? This cannot be undone.}}",
+      "deleted": "{count, plural, one {1 file deleted} other {# files deleted}}",
+      "table": {
+        "size": "Size",
+        "closedAt": "Closed",
+        "order": "Order",
+        "request": "Request"
+      }
     }
   }
 }

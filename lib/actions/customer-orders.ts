@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/validate";
 
@@ -17,5 +17,6 @@ export async function cancelOwnOrderAction(orderId: string): Promise<CancelOrder
   if (error) return { error: error.message };
   revalidatePath("/account/orders");
   revalidatePath(`/account/orders/${orderId}`);
+  revalidateTag("availability", "max");
   return { success: true };
 }

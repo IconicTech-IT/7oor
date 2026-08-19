@@ -6,6 +6,7 @@ export function Logo({ className }: { className?: string }) {
   return (
     <Link
       href="/"
+      dir="ltr"
       className={cn(
         "inline-flex items-center gap-2 font-sans text-2xl font-extrabold tracking-tight text-foreground",
         className,

@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { uploadUserFile } from "@/lib/storage";
 import {
@@ -53,7 +54,7 @@ export async function placeOrderAction(formData: FormData): Promise<PlaceOrderRe
   const screenshot = formData.get("screenshot");
   if (screenshot instanceof File && screenshot.size > 0) {
     try {
-      screenshotPath = await uploadUserFile(supabase, "payment-screenshots", user.id, screenshot);
+      screenshotPath = await uploadUserFile("payment-screenshots", user.id, screenshot);
     } catch (err) {
       console.error("placeOrderAction upload:", err);
       return { error: "Failed to upload payment screenshot" };
@@ -73,5 +74,6 @@ export async function placeOrderAction(formData: FormData): Promise<PlaceOrderRe
     return { error: error.message };
   }
 
+  revalidateTag("availability", "max");
   return { orderId: orderId as string };
 }

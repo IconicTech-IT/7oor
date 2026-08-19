@@ -5,7 +5,7 @@ import Image from "next/image";
 import { ImageOff, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import { createClient } from "@/lib/supabase/client";
+import { uploadProductImageAction } from "@/lib/actions/upload";
 
 type Props = {
   value: string;
@@ -20,15 +20,11 @@ export function ImageUploadField({ value, onChange, label }: Props) {
   async function handleFile(file: File) {
     setUploading(true);
     try {
-      const supabase = createClient();
-      const ext = file.name.includes(".") ? file.name.split(".").pop() : "jpg";
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage
-        .from("product-images")
-        .upload(path, file, { contentType: file.type });
-      if (error) throw error;
-      const { data } = supabase.storage.from("product-images").getPublicUrl(path);
-      onChange(data.publicUrl);
+      const formData = new FormData();
+      formData.set("file", file);
+      const result = await uploadProductImageAction(formData);
+      if (result.error) throw new Error(result.error);
+      if (result.url) onChange(result.url);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : t("uploadFailed"));
     } finally {

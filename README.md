@@ -6,9 +6,10 @@ chargers, stationery, and printing services — with a full Odoo-style admin pan
 dark/light mode, and SVG draw-in animations throughout.
 
 **Stack:** Next.js 16 (App Router, Turbopack) · TypeScript · Tailwind CSS v4 (with
-`next-themes` dark mode) · Supabase (Postgres, Auth, Storage, Realtime) · GSAP + Framer
-Motion + AOS · Formik + Yup (client) + Zod (independent server-side re-validation) ·
-Nodemailer (Gmail SMTP) · @react-pdf/renderer.
+`next-themes` dark mode) · Supabase (Postgres, Auth, Realtime) · Cloudflare R2 (file
+storage — product images, payment screenshots, request attachments; S3-compatible,
+zero egress fees) · GSAP + Framer Motion · Formik + Yup (client) + Zod (independent
+server-side re-validation) · Nodemailer (Gmail SMTP) · @react-pdf/renderer.
 
 ---
 
@@ -24,7 +25,21 @@ Copy `.env.example` to `.env.local` and fill in:
 | `GMAIL_SMTP_USER` | The Gmail address sending Request/Contact notifications |
 | `GMAIL_SMTP_APP_PASSWORD` | A Gmail [App Password](https://myaccount.google.com/apppasswords) (not your normal password — requires 2FA enabled on the account) |
 | `REQUESTS_NOTIFICATION_EMAIL` | Where Request/Contact notifications get sent (defaults to `GMAIL_SMTP_USER` if unset) |
+| `R2_ACCOUNT_ID` | Cloudflare dashboard → R2 → Overview (right sidebar) |
+| `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` | R2 → Manage API Tokens → create a token scoped to your bucket with Object Read & Write |
+| `R2_BUCKET_NAME` | The R2 bucket you created for this project |
+| `R2_PUBLIC_URL` | The bucket's public base URL (r2.dev, or a connected custom domain) — no trailing slash |
 | `NEXT_PUBLIC_SITE_URL` | Your deployed URL (e.g. `https://your-app.vercel.app`), `http://localhost:3000` locally |
+
+All uploaded files (product images, payment screenshots, request attachments) live in
+Cloudflare R2, not on the server's filesystem — this is required for Vercel, since
+serverless functions have no persistent local disk. Product images are re-encoded to
+WebP and capped at 1600px on the long edge before upload (`lib/image-compress.ts`) to
+keep storage/bandwidth usage low. Admins can review and delete unused/old files at
+**Admin → Storage** (`/admin/storage`, admin-only) — it flags product images no longer
+referenced by any product/variant (safe to delete) and payment screenshots/request
+attachments belonging to orders/requests closed more than 90 days ago (reviewed and
+deleted manually, never automatically).
 
 The Supabase project, schema, and seed data for this build already live in the
 `iconictech-it` Supabase org — see `supabase/migrations/*.sql` for the full schema
