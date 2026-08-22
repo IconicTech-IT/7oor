@@ -32,3 +32,16 @@ export async function getPurchaseOrderDetail(id: string) {
   }
   return data;
 }
+
+export async function getPurchaseReturns(purchaseOrderId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("purchase_returns")
+    .select(
+      "*, items:purchase_return_items(*, product:products(name_en, name_ar), variant:product_variants(name_en, name_ar))",
+    )
+    .eq("purchase_order_id", purchaseOrderId)
+    .order("created_at", { ascending: false });
+  if (error) console.error("getPurchaseReturns:", error.message);
+  return data ?? [];
+}

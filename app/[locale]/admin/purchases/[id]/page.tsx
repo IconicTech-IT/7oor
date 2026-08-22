@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { getPurchaseOrderDetail } from "@/lib/data/purchases";
+import { getTranslations, getLocale } from "next-intl/server";
+import { getPurchaseOrderDetail, getPurchaseReturns } from "@/lib/data/purchases";
 import { formatEGP } from "@/lib/currency";
 import { PurchaseOrderActions } from "@/components/admin/purchase-order-actions";
+import { PurchaseReturnDialog, type ReturnableItem } from "@/components/admin/purchase-return-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,19 @@ export default async function PurchaseOrderDetailPage({
   if (!po) notFound();
 
   const t = await getTranslations("admin.purchases");
+  const locale = await getLocale();
   const total = po.items.reduce((sum, i) => sum + i.qty_ordered * i.unit_cost, 0);
+
+  const returns = po.status === "received" ? await getPurchaseReturns(po.id) : [];
+  const returnableItems: ReturnableItem[] = po.items
+    .map((item) => ({
+      purchaseOrderItemId: item.id,
+      nameAr: item.variant ? `${item.product?.name_ar} — ${item.variant.name_ar}` : (item.product?.name_ar ?? ""),
+      nameEn: item.variant ? `${item.product?.name_en} — ${item.variant.name_en}` : (item.product?.name_en ?? ""),
+      unitCost: item.unit_cost,
+      returnable: item.qty_ordered - item.qty_returned,
+    }))
+    .filter((item) => item.returnable > 0);
 
   return (
     <div className="max-w-2xl">
@@ -40,6 +53,9 @@ export default async function PurchaseOrderDetailPage({
             {t.has(`status.${po.status}`) ? t(`status.${po.status}` as "status.draft") : po.status}
           </span>
           <PurchaseOrderActions id={po.id} status={po.status} />
+          {po.status === "received" && (
+            <PurchaseReturnDialog purchaseOrderId={po.id} items={returnableItems} />
+          )}
         </div>
       </div>
 
@@ -54,6 +70,11 @@ export default async function PurchaseOrderDetailPage({
                 {po.status === "received" && (
                   <span className="ms-2 text-xs text-success">
                     {t("detail.receivedQty", { qty: item.qty_received })}
+                  </span>
+                )}
+                {item.qty_returned > 0 && (
+                  <span className="ms-2 text-xs text-danger">
+                    {t("returns.returnedQty", { qty: item.qty_returned })}
                   </span>
                 )}
               </span>
@@ -74,6 +95,42 @@ export default async function PurchaseOrderDetailPage({
         <div className="mt-4 rounded-2xl border border-border bg-card p-4 text-sm">
           <p className="text-xs font-bold uppercase text-muted">{t("detail.notes")}</p>
           <p className="mt-1">{po.notes}</p>
+        </div>
+      )}
+
+      {returns.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-bold">{t("returns.history")}</h2>
+          <div className="mt-3 flex flex-col gap-3">
+            {returns.map((ret) => {
+              const returnTotal = ret.items.reduce((sum, i) => sum + i.line_total, 0);
+              return (
+                <div key={ret.id} className="rounded-2xl border border-border bg-card p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold">{ret.return_number}</p>
+                    <p className="font-bold text-danger">-{formatEGP(returnTotal, "en")}</p>
+                  </div>
+                  <p className="mt-1 text-xs text-muted">
+                    {new Date(ret.created_at).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-EG")}
+                    {ret.reason ? ` — ${ret.reason}` : ""}
+                  </p>
+                  <ul className="mt-2 flex flex-col gap-1 text-sm">
+                    {ret.items.map((item) => (
+                      <li key={item.id} className="flex justify-between text-muted">
+                        <span>
+                          {item.qty}× {locale === "ar" ? item.product?.name_ar : item.product?.name_en}
+                          {item.variant && (
+                            <span> — {locale === "ar" ? item.variant.name_ar : item.variant.name_en}</span>
+                          )}
+                        </span>
+                        <span>{formatEGP(item.line_total, "en")}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
         </div>
       )}
     </div>

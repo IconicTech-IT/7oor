@@ -55,8 +55,11 @@ export async function getReportSummary(from: string, to: string): Promise<Report
   let expenses = 0;
   for (const entry of data ?? []) {
     if (entry.type === "revenue") revenue += entry.amount;
+    else if (entry.type === "sales_return") revenue -= entry.amount;
     else if (entry.type === "cogs") cogs += entry.amount;
+    else if (entry.type === "cogs_reversal") cogs -= entry.amount;
     else if (entry.type === "expense") expenses += entry.amount;
+    else if (entry.type === "purchase_return") expenses -= entry.amount;
   }
   const grossProfit = revenue - cogs;
   const netProfit = grossProfit - expenses;

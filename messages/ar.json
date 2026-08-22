@@ -340,6 +340,20 @@
         "items": "العناصر",
         "cogs": "تكلفة البضاعة",
         "subtotal": "الإجمالي الفرعي"
+      },
+      "returns": {
+        "create": "معالجة مرتجع",
+        "selectAtLeastOne": "اختر صنف واحد على الأقل للإرجاع",
+        "toastCreated": "تم تسجيل المرتجع",
+        "returnable": "{qty} قابل للإرجاع",
+        "reason": "السبب",
+        "notes": "ملاحظات",
+        "restock": "إرجاع للمخزون القابل للبيع",
+        "notRestocked": "لم يُرجع للمخزون",
+        "saving": "جاري الحفظ...",
+        "save": "حفظ المرتجع",
+        "history": "المرتجعات",
+        "returnedQty": "تم إرجاع {qty}"
       }
     },
     "requests": {
@@ -452,7 +466,19 @@
         "deleteConfirm": "هل تريد حذف هذا المورد؟ لا يمكن التراجع عن هذا الإجراء.",
         "empty": "لا يوجد موردين حتى الآن."
       },
-      "toastSupplierAdded": "تم إضافة المورد"
+      "toastSupplierAdded": "تم إضافة المورد",
+      "returns": {
+        "create": "إنشاء مرتجع",
+        "selectAtLeastOne": "اختر صنف واحد على الأقل للإرجاع",
+        "toastCreated": "تم تسجيل المرتجع — تم تحديث المخزون والمصروفات",
+        "returnable": "{qty} قابل للإرجاع",
+        "reason": "السبب",
+        "notes": "ملاحظات",
+        "saving": "جاري الحفظ...",
+        "save": "حفظ المرتجع",
+        "history": "المرتجعات",
+        "returnedQty": "تم إرجاع {qty}"
+      }
     },
     "accounting": {
       "title": "الحسابات",
@@ -497,7 +523,10 @@
       "ledgerType": {
         "revenue": "إيرادات",
         "cogs": "تكلفة البضاعة",
-        "expense": "مصروفات"
+        "expense": "مصروفات",
+        "purchase_return": "مرتجع مشتريات",
+        "sales_return": "مرتجع مبيعات",
+        "cogs_reversal": "عكس تكلفة البضاعة"
       }
     },
     "settings": {

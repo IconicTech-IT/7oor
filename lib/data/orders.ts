@@ -63,6 +63,19 @@ export async function getOrderDetailAdmin(orderId: string) {
   return { ...order, customer };
 }
 
+export async function getSalesReturns(salesOrderId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("sales_returns")
+    .select(
+      "*, items:sales_return_items(*, product:products(name_en, name_ar), variant:product_variants(name_en, name_ar))",
+    )
+    .eq("sales_order_id", salesOrderId)
+    .order("created_at", { ascending: false });
+  if (error) console.error("getSalesReturns:", error.message);
+  return data ?? [];
+}
+
 export type InvoiceData = {
   invoiceNumber: string;
   orderNumber: string;

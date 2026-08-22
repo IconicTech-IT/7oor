@@ -20,6 +20,8 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+const CREDIT_LEDGER_TYPES = new Set(["revenue", "purchase_return", "cogs_reversal", "payment_received"]);
+
 function StatCard({ label, value, tone }: { label: string; value: string; tone?: "success" | "danger" }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
@@ -241,10 +243,10 @@ export default async function AdminAccountingPage({
                 <td className="px-4 py-3">{entry.description}</td>
                 <td
                   className={`px-4 py-3 text-end font-semibold ${
-                    entry.type === "revenue" ? "text-success" : "text-danger"
+                    CREDIT_LEDGER_TYPES.has(entry.type) ? "text-success" : "text-danger"
                   }`}
                 >
-                  {entry.type === "revenue" ? "+" : "-"}
+                  {CREDIT_LEDGER_TYPES.has(entry.type) ? "+" : "-"}
                   {formatEGP(entry.amount, "en")}
                 </td>
               </tr>

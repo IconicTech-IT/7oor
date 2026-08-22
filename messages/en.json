@@ -340,6 +340,20 @@
         "items": "Items",
         "cogs": "COGS",
         "subtotal": "Subtotal"
+      },
+      "returns": {
+        "create": "Process return",
+        "selectAtLeastOne": "Select at least one item to return",
+        "toastCreated": "Return recorded",
+        "returnable": "{qty} returnable",
+        "reason": "Reason",
+        "notes": "Notes",
+        "restock": "Restock (add back to sellable stock)",
+        "notRestocked": "not restocked",
+        "saving": "Saving...",
+        "save": "Save return",
+        "history": "Returns",
+        "returnedQty": "returned {qty}"
       }
     },
     "requests": {
@@ -452,7 +466,19 @@
         "deleteConfirm": "Delete this supplier? This cannot be undone.",
         "empty": "No suppliers yet."
       },
-      "toastSupplierAdded": "Supplier added"
+      "toastSupplierAdded": "Supplier added",
+      "returns": {
+        "create": "Create return",
+        "selectAtLeastOne": "Select at least one item to return",
+        "toastCreated": "Return recorded — stock and expenses updated",
+        "returnable": "{qty} returnable",
+        "reason": "Reason",
+        "notes": "Notes",
+        "saving": "Saving...",
+        "save": "Save return",
+        "history": "Returns",
+        "returnedQty": "returned {qty}"
+      }
     },
     "accounting": {
       "title": "Accounting",
@@ -497,7 +523,10 @@
       "ledgerType": {
         "revenue": "Revenue",
         "cogs": "COGS",
-        "expense": "Expense"
+        "expense": "Expense",
+        "purchase_return": "Purchase return",
+        "sales_return": "Sales return",
+        "cogs_reversal": "COGS reversal"
       }
     },
     "settings": {

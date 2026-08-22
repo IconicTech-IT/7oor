@@ -1,9 +1,10 @@
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { getOrderDetailAdmin } from "@/lib/data/orders";
+import { getTranslations, getLocale } from "next-intl/server";
+import { getOrderDetailAdmin, getSalesReturns } from "@/lib/data/orders";
 import { formatEGP } from "@/lib/currency";
 import { OrderStatusActions } from "@/components/admin/order-status-actions";
 import { PaymentScreenshotViewer } from "@/components/admin/payment-screenshot-viewer";
+import { SalesReturnDialog, type ReturnableOrderItem } from "@/components/admin/sales-return-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -31,11 +32,22 @@ export default async function AdminOrderDetailPage({
   const t = await getTranslations("admin.orders");
   const tAccounting = await getTranslations("admin.accounting");
   const tCheckout = await getTranslations("checkout");
+  const locale = await getLocale();
 
   const fulfillmentKey = FULFILLMENT_KEY[order.fulfillment_method];
   const fulfillmentLabel = fulfillmentKey ? tCheckout(fulfillmentKey) : order.fulfillment_method;
   const paymentKey = PAYMENT_METHOD_KEY[order.payment_method];
   const paymentLabel = paymentKey ? tCheckout(paymentKey) : order.payment_method;
+
+  const returns = order.status === "done" ? await getSalesReturns(order.id) : [];
+  const returnableItems: ReturnableOrderItem[] = order.items
+    .map((item) => ({
+      salesOrderItemId: item.id,
+      name: locale === "ar" ? item.name_snapshot_ar : item.name_snapshot_en,
+      unitPrice: item.unit_price,
+      returnable: item.qty - item.qty_returned,
+    }))
+    .filter((item) => item.returnable > 0);
 
   return (
     <div className="max-w-3xl">
@@ -46,7 +58,12 @@ export default async function AdminOrderDetailPage({
             {new Date(order.created_at).toLocaleString("en-GB")}
           </p>
         </div>
-        <OrderStatusActions orderId={order.id} status={order.status} />
+        <div className="flex items-center gap-3">
+          <OrderStatusActions orderId={order.id} status={order.status} />
+          {order.status === "done" && (
+            <SalesReturnDialog salesOrderId={order.id} items={returnableItems} />
+          )}
+        </div>
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -93,6 +110,11 @@ export default async function AdminOrderDetailPage({
             <li key={item.id} className="flex justify-between text-sm">
               <span>
                 {item.qty}× {item.name_snapshot_en}
+                {item.qty_returned > 0 && (
+                  <span className="ms-2 text-xs text-danger">
+                    {t("returns.returnedQty", { qty: item.qty_returned })}
+                  </span>
+                )}
               </span>
               <div className="flex items-center gap-4">
                 {item.cogs_total !== null && (
@@ -122,6 +144,45 @@ export default async function AdminOrderDetailPage({
           </div>
         </div>
       </div>
+
+      {returns.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-bold">{t("returns.history")}</h2>
+          <div className="mt-3 flex flex-col gap-3">
+            {returns.map((ret) => {
+              const refundTotal = ret.items.reduce((sum, i) => sum + i.line_total, 0);
+              return (
+                <div key={ret.id} className="rounded-2xl border border-border bg-card p-4">
+                  <div className="flex items-center justify-between">
+                    <p className="font-semibold">{ret.return_number}</p>
+                    <p className="font-bold text-danger">-{formatEGP(refundTotal, "en")}</p>
+                  </div>
+                  <p className="mt-1 text-xs text-muted">
+                    {new Date(ret.created_at).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-EG")}
+                    {ret.reason ? ` — ${ret.reason}` : ""}
+                  </p>
+                  <ul className="mt-2 flex flex-col gap-1 text-sm">
+                    {ret.items.map((item) => (
+                      <li key={item.id} className="flex justify-between text-muted">
+                        <span>
+                          {item.qty}× {locale === "ar" ? item.product?.name_ar : item.product?.name_en}
+                          {item.variant && (
+                            <span> — {locale === "ar" ? item.variant.name_ar : item.variant.name_en}</span>
+                          )}
+                          {!item.restocked && (
+                            <span className="ms-1.5 text-xs text-warning">({t("returns.notRestocked")})</span>
+                          )}
+                        </span>
+                        <span>{formatEGP(item.line_total, "en")}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
