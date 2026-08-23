@@ -11,13 +11,20 @@ import { placeOrderAction } from "@/lib/actions/checkout";
 import { useCartStore, cartSubtotal, useCartHydrated } from "@/lib/store/cart";
 import { useDirSign } from "@/lib/rtl";
 import { getSlideVariants } from "@/lib/motion";
+import type { PaymentInfo } from "@/lib/data/products";
 import { OrderSummary } from "./order-summary";
 
 const STEPS = ["fulfillment", "payment", "review"] as const;
 const inputClass =
   "w-full rounded-xl border border-border px-4 py-3 text-sm focus:border-primary focus:outline-none";
 
-export function CheckoutForm({ deliveryFee }: { deliveryFee: number }) {
+export function CheckoutForm({
+  deliveryFee,
+  paymentInfo,
+}: {
+  deliveryFee: number;
+  paymentInfo: PaymentInfo;
+}) {
   const t = useTranslations("checkout");
   const tCart = useTranslations("cart");
   const tCommon = useTranslations("common");
@@ -81,6 +88,17 @@ export function CheckoutForm({ deliveryFee }: { deliveryFee: number }) {
         const isDelivery = values.fulfillmentMethod === "delivery";
         const needsScreenshot = values.paymentMethod !== "cash";
         const total = subtotal + (isDelivery ? deliveryFee : 0);
+        // Which account the customer must transfer to. Empty when the admin hasn't filled it
+        // in yet under Admin -> Settings, in which case we render nothing rather than an
+        // empty box — the screenshot upload alone would otherwise be unanswerable.
+        const payToAccount =
+          values.paymentMethod === "instapay"
+            ? paymentInfo.instapay
+            : values.paymentMethod === "vodafone_cash"
+              ? paymentInfo.vodafoneCash
+              : values.paymentMethod === "other_wallet"
+                ? paymentInfo.otherWalletNote
+                : "";
 
         async function goNext() {
           const stepFields = step === 0 ? fulfillmentStepFields : paymentStepFields;
@@ -191,6 +209,14 @@ export function CheckoutForm({ deliveryFee }: { deliveryFee: number }) {
                           ),
                         )}
                       </div>
+                      {needsScreenshot && payToAccount && (
+                        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4">
+                          <p className="text-sm font-semibold text-primary">{t("sendPaymentTo")}</p>
+                          <p dir="ltr" className="mt-1 select-all break-all text-base font-bold text-foreground">
+                            {payToAccount}
+                          </p>
+                        </div>
+                      )}
                       {needsScreenshot && (
                         <div>
                           <label className="mb-1.5 block text-sm font-semibold">

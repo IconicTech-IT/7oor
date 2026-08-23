@@ -413,6 +413,7 @@ export type Database = {
           purchase_order_id: string
           qty_ordered: number
           qty_received: number
+          qty_returned: number
           unit_cost: number
           variant_id: string | null
         }
@@ -423,6 +424,7 @@ export type Database = {
           purchase_order_id: string
           qty_ordered: number
           qty_received?: number
+          qty_returned?: number
           unit_cost: number
           variant_id?: string | null
         }
@@ -433,6 +435,7 @@ export type Database = {
           purchase_order_id?: string
           qty_ordered?: number
           qty_received?: number
+          qty_returned?: number
           unit_cost?: number
           variant_id?: string | null
         }
@@ -514,6 +517,116 @@ export type Database = {
           },
         ]
       }
+      purchase_return_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total: number
+          product_id: string
+          purchase_order_item_id: string
+          purchase_return_id: string
+          qty: number
+          unit_cost: number
+          variant_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total: number
+          product_id: string
+          purchase_order_item_id: string
+          purchase_return_id: string
+          qty: number
+          unit_cost: number
+          variant_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total?: number
+          product_id?: string
+          purchase_order_item_id?: string
+          purchase_return_id?: string
+          qty?: number
+          unit_cost?: number
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_return_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_return_items_purchase_order_item_id_fkey"
+            columns: ["purchase_order_item_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_return_items_purchase_return_id_fkey"
+            columns: ["purchase_return_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_returns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_return_items_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      purchase_returns: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          purchase_order_id: string
+          reason: string | null
+          return_number: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          purchase_order_id: string
+          reason?: string | null
+          return_number?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          purchase_order_id?: string
+          reason?: string | null
+          return_number?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_returns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "purchase_returns_purchase_order_id_fkey"
+            columns: ["purchase_order_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       requests: {
         Row: {
           admin_notes: string | null
@@ -583,6 +696,7 @@ export type Database = {
           name_snapshot_en: string
           product_id: string
           qty: number
+          qty_returned: number
           sales_order_id: string
           unit_price: number
           variant_id: string | null
@@ -596,6 +710,7 @@ export type Database = {
           name_snapshot_en: string
           product_id: string
           qty: number
+          qty_returned?: number
           sales_order_id: string
           unit_price: number
           variant_id?: string | null
@@ -609,6 +724,7 @@ export type Database = {
           name_snapshot_en?: string
           product_id?: string
           qty?: number
+          qty_returned?: number
           sales_order_id?: string
           unit_price?: number
           variant_id?: string | null
@@ -701,6 +817,122 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_return_items: {
+        Row: {
+          created_at: string
+          id: string
+          line_total: number
+          product_id: string
+          qty: number
+          restocked: boolean
+          sales_order_item_id: string
+          sales_return_id: string
+          unit_cost: number
+          unit_price: number
+          variant_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          line_total: number
+          product_id: string
+          qty: number
+          restocked?: boolean
+          sales_order_item_id: string
+          sales_return_id: string
+          unit_cost: number
+          unit_price: number
+          variant_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          line_total?: number
+          product_id?: string
+          qty?: number
+          restocked?: boolean
+          sales_order_item_id?: string
+          sales_return_id?: string
+          unit_cost?: number
+          unit_price?: number
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_return_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_return_items_sales_order_item_id_fkey"
+            columns: ["sales_order_item_id"]
+            isOneToOne: false
+            referencedRelation: "sales_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_return_items_sales_return_id_fkey"
+            columns: ["sales_return_id"]
+            isOneToOne: false
+            referencedRelation: "sales_returns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_return_items_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_returns: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          reason: string | null
+          return_number: string
+          sales_order_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          reason?: string | null
+          return_number?: string
+          sales_order_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          reason?: string | null
+          return_number?: string
+          sales_order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_returns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_returns_sales_order_id_fkey"
+            columns: ["sales_order_id"]
+            isOneToOne: false
+            referencedRelation: "sales_orders"
             referencedColumns: ["id"]
           },
         ]
@@ -837,6 +1069,15 @@ export type Database = {
         Args: { p_sales_order_id: string }
         Returns: undefined
       }
+      create_purchase_return: {
+        Args: {
+          p_items: Json
+          p_notes: string
+          p_purchase_order_id: string
+          p_reason: string
+        }
+        Returns: string
+      }
       create_sales_order: {
         Args: {
           p_delivery_address: string
@@ -844,6 +1085,15 @@ export type Database = {
           p_items: Json
           p_payment_method: string
           p_payment_screenshot_path: string
+        }
+        Returns: string
+      }
+      create_sales_return: {
+        Args: {
+          p_items: Json
+          p_notes: string
+          p_reason: string
+          p_sales_order_id: string
         }
         Returns: string
       }

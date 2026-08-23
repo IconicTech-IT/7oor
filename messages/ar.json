@@ -127,6 +127,7 @@
     "instapay": "InstaPay",
     "vodafoneCash": "فودافون كاش",
     "otherWallet": "محفظة إلكترونية أخرى",
+    "sendPaymentTo": "حوّل المبلغ على الحساب ده، وبعدين ارفع صورة التحويل",
     "uploadScreenshot": "ارفع صورة إثبات التحويل",
     "total": "الإجمالي",
     "placeOrder": "تأكيد الطلب",

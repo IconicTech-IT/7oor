@@ -127,6 +127,7 @@
     "instapay": "InstaPay",
     "vodafoneCash": "Vodafone Cash",
     "otherWallet": "Other e-wallet",
+    "sendPaymentTo": "Send the payment to this account, then upload the screenshot",
     "uploadScreenshot": "Upload transfer screenshot",
     "total": "Total",
     "placeOrder": "Place order",

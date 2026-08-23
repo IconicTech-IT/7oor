@@ -183,7 +183,14 @@ begin
   return v_return_id;
 end; $$;
 
+-- BOTH revokes are required. Postgres grants EXECUTE to PUBLIC by default, and Supabase's
+-- ALTER DEFAULT PRIVILEGES additionally grants EXECUTE to anon explicitly on new public-schema
+-- functions — so revoking only one of them leaves the other in place (verified against
+-- pg_proc.proacl after apply). End state matches every other write RPC in this schema:
+-- postgres | authenticated | service_role.
+revoke execute on function create_purchase_return(uuid, jsonb, text, text) from public;
 revoke execute on function create_purchase_return(uuid, jsonb, text, text) from anon;
+grant execute on function create_purchase_return(uuid, jsonb, text, text) to authenticated;
 
 -- ============================================================
 -- SALES RETURNS
@@ -329,4 +336,7 @@ begin
   return v_return_id;
 end; $$;
 
+-- Same both-revokes reasoning as create_purchase_return above.
+revoke execute on function create_sales_return(uuid, jsonb, text, text) from public;
 revoke execute on function create_sales_return(uuid, jsonb, text, text) from anon;
+grant execute on function create_sales_return(uuid, jsonb, text, text) to authenticated;
