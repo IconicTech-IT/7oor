@@ -4,12 +4,16 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { categorySchema, categoryZodSchema, type CategoryValues } from "@/lib/validators/category";
 import { validateBoth, isUuid } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
 // RLS ("staff write categories") already restricts this to admin/staff regardless of
 // what the client sends — this is a second line of defense, not the only one.
 export async function createCategoryAction(input: CategoryValues): Promise<ActionResult> {
+  const sectionError = await assertSection("categories");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(categorySchema, categoryZodSchema, input);
@@ -39,6 +43,9 @@ export async function updateCategoryAction(
   id: string,
   input: CategoryValues,
 ): Promise<ActionResult> {
+  const sectionError = await assertSection("categories");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid category id" };
   let data;
   try {
@@ -65,6 +72,9 @@ export async function updateCategoryAction(
 }
 
 export async function deleteCategoryAction(id: string): Promise<ActionResult> {
+  const sectionError = await assertSection("categories");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid category id" };
   const supabase = await createClient();
   const { error } = await supabase.from("categories").delete().eq("id", id);

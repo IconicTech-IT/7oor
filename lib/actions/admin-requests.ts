@@ -9,6 +9,7 @@ import {
   type UpdateRequestStatusValues,
 } from "@/lib/validators/admin-request";
 import { validateBoth, isUuid } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string };
 
@@ -17,6 +18,9 @@ export async function updateRequestStatusAction(
   id: string,
   input: UpdateRequestStatusValues,
 ): Promise<ActionResult> {
+  const sectionError = await assertSection("requests");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid request id" };
 
   let data;

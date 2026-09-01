@@ -9,6 +9,7 @@ export type StaffAccount = {
   phone: string | null;
   role: string;
   createdAt: string;
+  sections: string[];
 };
 
 /**
@@ -18,10 +19,15 @@ export type StaffAccount = {
  */
 export async function getAllStaffAndCustomers(): Promise<StaffAccount[]> {
   const supabase = await createClient();
-  const { data: profiles } = await supabase
-    .from("profiles")
-    .select("id, role, full_name, phone, created_at")
-    .order("created_at");
+  const [{ data: profiles }, { data: permissions }] = await Promise.all([
+    supabase.from("profiles").select("id, role, full_name, phone, created_at").order("created_at"),
+    supabase.from("staff_permissions").select("user_id, sections"),
+  ]);
+
+  const sectionsById = new Map<string, string[]>();
+  for (const row of permissions ?? []) {
+    sectionsById.set(row.user_id, row.sections);
+  }
 
   const adminClient = createAdminClient();
   const emailById = new Map<string, string | null>();
@@ -44,5 +50,6 @@ export async function getAllStaffAndCustomers(): Promise<StaffAccount[]> {
     phone: profile.phone,
     role: profile.role,
     createdAt: profile.created_at,
+    sections: sectionsById.get(profile.id) ?? [],
   }));
 }

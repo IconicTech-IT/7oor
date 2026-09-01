@@ -15,28 +15,69 @@ import {
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/layout/logo";
+import type { AdminSection } from "@/lib/admin-sections";
 
 type Role = "admin" | "staff";
-type NavItem = { href: string; labelKey: string; icon: typeof LayoutGrid; roles: Role[] };
+type NavItem = {
+  href: string;
+  labelKey: string;
+  icon: typeof LayoutGrid;
+  roles: Role[];
+  section?: AdminSection;
+};
 
 const NAV: NavItem[] = [
   { href: "/admin", labelKey: "dashboard", icon: LayoutGrid, roles: ["admin", "staff"] },
-  { href: "/admin/products", labelKey: "products", icon: Package, roles: ["admin", "staff"] },
-  { href: "/admin/categories", labelKey: "categories", icon: FolderTree, roles: ["admin", "staff"] },
-  { href: "/admin/orders", labelKey: "orders", icon: ShoppingCart, roles: ["admin", "staff"] },
-  { href: "/admin/requests", labelKey: "requests", icon: MessageSquareText, roles: ["admin", "staff"] },
-  { href: "/admin/inventory", labelKey: "inventory", icon: Warehouse, roles: ["admin", "staff"] },
-  { href: "/admin/purchases", labelKey: "purchases", icon: Truck, roles: ["admin", "staff"] },
-  { href: "/admin/suppliers", labelKey: "suppliers", icon: Building2, roles: ["admin", "staff"] },
+  { href: "/admin/products", labelKey: "products", icon: Package, roles: ["admin", "staff"], section: "products" },
+  {
+    href: "/admin/categories",
+    labelKey: "categories",
+    icon: FolderTree,
+    roles: ["admin", "staff"],
+    section: "categories",
+  },
+  { href: "/admin/orders", labelKey: "orders", icon: ShoppingCart, roles: ["admin", "staff"], section: "orders" },
+  {
+    href: "/admin/requests",
+    labelKey: "requests",
+    icon: MessageSquareText,
+    roles: ["admin", "staff"],
+    section: "requests",
+  },
+  {
+    href: "/admin/inventory",
+    labelKey: "inventory",
+    icon: Warehouse,
+    roles: ["admin", "staff"],
+    section: "inventory",
+  },
+  { href: "/admin/purchases", labelKey: "purchases", icon: Truck, roles: ["admin", "staff"], section: "purchases" },
+  {
+    href: "/admin/suppliers",
+    labelKey: "suppliers",
+    icon: Building2,
+    roles: ["admin", "staff"],
+    section: "suppliers",
+  },
   { href: "/admin/accounting", labelKey: "accounting", icon: Wallet, roles: ["admin"] },
   { href: "/admin/staff", labelKey: "staff", icon: Users, roles: ["admin"] },
   { href: "/admin/storage", labelKey: "storage", icon: HardDrive, roles: ["admin"] },
   { href: "/admin/settings", labelKey: "settings", icon: Settings, roles: ["admin"] },
 ];
 
-export async function AdminSidebar({ role }: { role: string }) {
+export async function AdminSidebar({
+  role,
+  sections,
+}: {
+  role: string;
+  sections: AdminSection[] | null;
+}) {
   const t = await getTranslations("admin");
-  const items = NAV.filter((item) => item.roles.includes(role as Role));
+  const items = NAV.filter((item) => {
+    if (!item.roles.includes(role as Role)) return false;
+    if (role === "staff" && item.section) return (sections ?? []).includes(item.section);
+    return true;
+  });
 
   return (
     <aside className="hidden w-60 shrink-0 border-e border-border bg-card lg:block">

@@ -1,15 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 
-/** `date` (YYYY-MM-DD) narrows to requests created that single calendar day, when provided. */
-export async function getAllRequestsAdmin(date?: string) {
+/**
+ * `from`/`to` (YYYY-MM-DD) narrow to requests created in that range — pass the same value for
+ * both to get a single day.
+ */
+export async function getAllRequestsAdmin(from?: string, to?: string) {
   const supabase = await createClient();
   let query = supabase.from("requests").select("*").order("created_at", { ascending: false });
 
-  if (date) {
-    const start = `${date}T00:00:00`;
-    const end = `${date}T23:59:59.999`;
-    query = query.gte("created_at", start).lte("created_at", end);
-  }
+  if (from) query = query.gte("created_at", `${from}T00:00:00`);
+  if (to) query = query.lte("created_at", `${to}T23:59:59.999`);
 
   const { data, error } = await query;
   if (error) console.error("getAllRequestsAdmin:", error.message);

@@ -4,10 +4,14 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { supplierSchema, supplierZodSchema, type SupplierValues } from "@/lib/validators/purchase";
 import { validateBoth, isUuid } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
 export async function createSupplierAction(input: SupplierValues): Promise<ActionResult> {
+  const sectionError = await assertSection("suppliers");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(supplierSchema, supplierZodSchema, input);
@@ -33,6 +37,9 @@ export async function createSupplierAction(input: SupplierValues): Promise<Actio
 }
 
 export async function updateSupplierAction(id: string, input: SupplierValues): Promise<ActionResult> {
+  const sectionError = await assertSection("suppliers");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid supplier id" };
   let data;
   try {
@@ -58,6 +65,9 @@ export async function updateSupplierAction(id: string, input: SupplierValues): P
 }
 
 export async function deleteSupplierAction(id: string): Promise<ActionResult> {
+  const sectionError = await assertSection("suppliers");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid supplier id" };
   const supabase = await createClient();
   const { error } = await supabase.from("suppliers").delete().eq("id", id);

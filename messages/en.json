@@ -218,10 +218,52 @@
       "storage": "Storage",
       "suppliers": "Suppliers"
     },
+    "staffPage": {
+      "title": "Staff",
+      "subtitle": "Manage account roles and permissions. You cannot change your own role.",
+      "you": "you",
+      "toastRoleUpdated": "Role updated",
+      "roles": {
+        "customer": "Customer",
+        "staff": "Staff",
+        "admin": "Admin"
+      },
+      "table": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "role": "Role",
+        "joined": "Joined"
+      },
+      "resetPassword": {
+        "action": "Change password",
+        "title": "Change password for {label}",
+        "newPassword": "New password",
+        "saving": "Saving...",
+        "save": "Change password",
+        "toastUpdated": "Password changed"
+      },
+      "permissions": {
+        "sections": {
+          "products": "Products",
+          "categories": "Categories",
+          "orders": "Orders",
+          "requests": "Requests",
+          "inventory": "Inventory",
+          "purchases": "Purchases",
+          "suppliers": "Suppliers"
+        },
+        "saving": "Saving...",
+        "save": "Save permissions",
+        "toastUpdated": "Staff permissions updated"
+      }
+    },
     "common": {
       "selectPlaceholder": "— Select —",
       "noneOption": "— None —",
       "date": "Date",
+      "from": "From",
+      "to": "To",
       "apply": "Apply",
       "allDates": "All dates"
     },
@@ -577,7 +619,23 @@
       "deliveryFee": "Delivery fee",
       "deliveryFeeLabel": "Delivery fee (EGP)",
       "saving": "Saving...",
-      "toastUpdated": "Delivery fee updated"
+      "toastUpdated": "Delivery fee updated",
+      "paymentInfo": {
+        "title": "Payment info",
+        "subtitle": "The accounts shown to customers to transfer to at checkout.",
+        "instapay": "InstaPay number",
+        "vodafoneCash": "Vodafone Cash number",
+        "otherWalletNote": "Note for another e-wallet"
+      },
+      "changePassword": {
+        "title": "Change password",
+        "newPassword": "New password",
+        "confirmPassword": "Confirm password",
+        "passwordsMustMatch": "Passwords do not match",
+        "saving": "Saving...",
+        "save": "Change password",
+        "toastUpdated": "Password changed"
+      }
     },
     "storage": {
       "title": "Storage",

@@ -961,6 +961,32 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_permissions: {
+        Row: {
+          sections: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          sections?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          sections?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_permissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stock_lots: {
         Row: {
           created_at: string
@@ -1139,6 +1165,10 @@ export type Database = {
       }
       receive_purchase_order: {
         Args: { p_purchase_order_id: string }
+        Returns: undefined
+      }
+      set_staff_sections: {
+        Args: { p_sections: string[]; p_target_user_id: string }
         Returns: undefined
       }
       set_user_role: {

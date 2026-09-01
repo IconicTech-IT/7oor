@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { productSchema, productZodSchema, type ProductFormValues } from "@/lib/validators/product";
 import { validateBoth, isUuid } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
@@ -34,6 +35,9 @@ export async function saveProductAction(
   productId: string | null,
   input: ProductFormValues,
 ): Promise<ActionResult> {
+  const sectionError = await assertSection("products");
+  if (sectionError) return { error: sectionError };
+
   if (productId && !isUuid(productId)) return { error: "Invalid product id" };
   let data;
   try {
@@ -105,6 +109,9 @@ export async function saveProductAction(
 }
 
 export async function deleteProductAction(id: string): Promise<ActionResult> {
+  const sectionError = await assertSection("products");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid product id" };
   const supabase = await createClient();
   const { error } = await supabase.from("products").delete().eq("id", id);

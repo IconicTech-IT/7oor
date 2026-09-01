@@ -34,20 +34,18 @@ export async function getOrderDetail(orderId: string) {
 
 /**
  * Staff/admin view — RLS on sales_orders already scopes SELECT to staff/admin + owner.
- * `date` (YYYY-MM-DD) narrows to orders created that single calendar day, when provided.
+ * `from`/`to` (YYYY-MM-DD) narrow to orders created in that range — pass the same value for
+ * both to get a single day.
  */
-export async function getAllOrdersAdmin(date?: string) {
+export async function getAllOrdersAdmin(from?: string, to?: string) {
   const supabase = await createClient();
   let query = supabase
     .from("sales_orders")
     .select("*, invoice:invoices(*), items:sales_order_items(*)")
     .order("created_at", { ascending: false });
 
-  if (date) {
-    const start = `${date}T00:00:00`;
-    const end = `${date}T23:59:59.999`;
-    query = query.gte("created_at", start).lte("created_at", end);
-  }
+  if (from) query = query.gte("created_at", `${from}T00:00:00`);
+  if (to) query = query.lte("created_at", `${to}T23:59:59.999`);
 
   const { data, error } = await query;
 

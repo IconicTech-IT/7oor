@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { adjustStockSchema, adjustStockZodSchema } from "@/lib/validators/inventory";
 import { validateBoth } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string };
 
@@ -15,6 +16,9 @@ export async function adjustStockAction(input: {
   reason: "adjustment" | "damaged";
   notes?: string;
 }): Promise<ActionResult> {
+  const sectionError = await assertSection("inventory");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(adjustStockSchema, adjustStockZodSchema, input);

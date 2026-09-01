@@ -4,6 +4,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getSignedUrl } from "@/lib/storage";
 import { isUuid, validateBoth } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 import {
   manualSaleSchema,
   manualSaleZodSchema,
@@ -18,6 +19,9 @@ export type ActionResult = { success?: boolean; error?: string; id?: string };
 // The RPCs themselves re-check app_role() in ('admin','staff') server-side (see migration
 // 0001/0002) — this action can't grant access the database wouldn't already grant.
 export async function confirmOrderAction(orderId: string): Promise<ActionResult> {
+  const sectionError = await assertSection("orders");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(orderId)) return { error: "Invalid order id" };
   const supabase = await createClient();
   const { error } = await supabase.rpc("confirm_sales_order", { p_sales_order_id: orderId });
@@ -28,6 +32,9 @@ export async function confirmOrderAction(orderId: string): Promise<ActionResult>
 }
 
 export async function markOrderDoneAction(orderId: string): Promise<ActionResult> {
+  const sectionError = await assertSection("orders");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(orderId)) return { error: "Invalid order id" };
   const supabase = await createClient();
   const { error } = await supabase.rpc("mark_sales_order_done", { p_sales_order_id: orderId });
@@ -40,6 +47,9 @@ export async function markOrderDoneAction(orderId: string): Promise<ActionResult
 }
 
 export async function cancelOrderAction(orderId: string): Promise<ActionResult> {
+  const sectionError = await assertSection("orders");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(orderId)) return { error: "Invalid order id" };
   const supabase = await createClient();
   const { error } = await supabase.rpc("cancel_sales_order", { p_sales_order_id: orderId });
@@ -58,6 +68,9 @@ export async function getPaymentScreenshotUrlAction(path: string): Promise<strin
 // client prices) and immediately completes the sale via mark_sales_order_done(), so a
 // walk-in sale deducts stock and posts to the accounting ledger the same as checkout does.
 export async function createManualSaleAction(input: ManualSaleValues): Promise<ActionResult> {
+  const sectionError = await assertSection("orders");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(manualSaleSchema, manualSaleZodSchema, input);
@@ -93,6 +106,9 @@ export async function updateOrderItemsAction(
   orderId: string,
   items: EditOrderItemsValues,
 ): Promise<ActionResult> {
+  const sectionError = await assertSection("orders");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(orderId)) return { error: "Invalid order id" };
   let data;
   try {

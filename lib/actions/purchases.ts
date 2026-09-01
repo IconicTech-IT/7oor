@@ -8,10 +8,14 @@ import {
   type PurchaseOrderValues,
 } from "@/lib/validators/purchase";
 import { validateBoth, isUuid } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
 export async function createPurchaseOrderAction(input: PurchaseOrderValues): Promise<ActionResult> {
+  const sectionError = await assertSection("purchases");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(purchaseOrderSchema, purchaseOrderZodSchema, input);
@@ -43,6 +47,9 @@ export async function createPurchaseOrderAction(input: PurchaseOrderValues): Pro
 }
 
 export async function markPurchaseOrderedAction(id: string): Promise<ActionResult> {
+  const sectionError = await assertSection("purchases");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid purchase order id" };
   const supabase = await createClient();
   const { error } = await supabase
@@ -59,6 +66,9 @@ export async function markPurchaseOrderedAction(id: string): Promise<ActionResul
 // inventory_movements rows staff have no direct insert access to, keeping FIFO cost
 // basis tied to what was actually receipted.
 export async function receivePurchaseOrderAction(id: string): Promise<ActionResult> {
+  const sectionError = await assertSection("purchases");
+  if (sectionError) return { error: sectionError };
+
   if (!isUuid(id)) return { error: "Invalid purchase order id" };
   const supabase = await createClient();
   const { error } = await supabase.rpc("receive_purchase_order", { p_purchase_order_id: id });

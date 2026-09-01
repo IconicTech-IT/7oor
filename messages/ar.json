@@ -218,10 +218,52 @@
       "storage": "التخزين",
       "suppliers": "الموردين"
     },
+    "staffPage": {
+      "title": "الموظفين",
+      "subtitle": "إدارة صلاحيات الحسابات. متقدرش تغيّر الرول بتاعك.",
+      "you": "أنت",
+      "toastRoleUpdated": "تم تحديث الصلاحية",
+      "roles": {
+        "customer": "عميل",
+        "staff": "موظف",
+        "admin": "أدمن"
+      },
+      "table": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "role": "الصلاحية",
+        "joined": "تاريخ الانضمام"
+      },
+      "resetPassword": {
+        "action": "تغيير كلمة المرور",
+        "title": "تغيير كلمة مرور {label}",
+        "newPassword": "كلمة المرور الجديدة",
+        "saving": "جاري الحفظ...",
+        "save": "تغيير كلمة المرور",
+        "toastUpdated": "تم تغيير كلمة المرور"
+      },
+      "permissions": {
+        "sections": {
+          "products": "المنتجات",
+          "categories": "الأقسام",
+          "orders": "الطلبات",
+          "requests": "الطلبات الخاصة",
+          "inventory": "المخزون",
+          "purchases": "المشتريات",
+          "suppliers": "الموردين"
+        },
+        "saving": "جاري الحفظ...",
+        "save": "حفظ الصلاحيات",
+        "toastUpdated": "تم تحديث صلاحيات الموظف"
+      }
+    },
     "common": {
       "selectPlaceholder": "— اختر —",
       "noneOption": "— بدون —",
       "date": "التاريخ",
+      "from": "من",
+      "to": "إلى",
       "apply": "تطبيق",
       "allDates": "كل الأيام"
     },
@@ -577,7 +619,23 @@
       "deliveryFee": "رسوم التوصيل",
       "deliveryFeeLabel": "رسوم التوصيل (جنيه)",
       "saving": "جاري الحفظ...",
-      "toastUpdated": "تم تحديث رسوم التوصيل"
+      "toastUpdated": "تم تحديث رسوم التوصيل",
+      "paymentInfo": {
+        "title": "بيانات الدفع",
+        "subtitle": "الحسابات اللي بتظهر للعميل عشان يحول عليها في الشراء.",
+        "instapay": "رقم إنستاباي",
+        "vodafoneCash": "رقم فودافون كاش",
+        "otherWalletNote": "ملاحظة لمحفظة إلكترونية أخرى"
+      },
+      "changePassword": {
+        "title": "تغيير كلمة المرور",
+        "newPassword": "كلمة المرور الجديدة",
+        "confirmPassword": "تأكيد كلمة المرور",
+        "passwordsMustMatch": "كلمتا المرور غير متطابقتين",
+        "saving": "جاري الحفظ...",
+        "save": "تغيير كلمة المرور",
+        "toastUpdated": "تم تغيير كلمة المرور"
+      }
     },
     "storage": {
       "title": "التخزين",

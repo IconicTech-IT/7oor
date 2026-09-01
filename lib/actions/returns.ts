@@ -11,6 +11,7 @@ import {
   type SalesReturnValues,
 } from "@/lib/validators/returns";
 import { validateBoth } from "@/lib/validate";
+import { assertSection } from "@/lib/admin-permissions";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
 
@@ -20,6 +21,9 @@ export type ActionResult = { success?: boolean; error?: string; id?: string };
 // shape only; the RPCs re-check role, order/PO status, and returnable quantities
 // themselves, matching every other financially-sensitive mutation in this project.
 export async function createPurchaseReturnAction(input: PurchaseReturnValues): Promise<ActionResult> {
+  const sectionError = await assertSection("purchases");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(purchaseReturnSchema, purchaseReturnZodSchema, input);
@@ -47,6 +51,9 @@ export async function createPurchaseReturnAction(input: PurchaseReturnValues): P
 }
 
 export async function createSalesReturnAction(input: SalesReturnValues): Promise<ActionResult> {
+  const sectionError = await assertSection("orders");
+  if (sectionError) return { error: sectionError };
+
   let data;
   try {
     data = await validateBoth(salesReturnSchema, salesReturnZodSchema, input);
