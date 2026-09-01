@@ -7,7 +7,10 @@ import { isUuid, validateBoth } from "@/lib/validate";
 import {
   manualSaleSchema,
   manualSaleZodSchema,
+  editOrderItemsSchema,
+  editOrderItemsZodSchema,
   type ManualSaleValues,
+  type EditOrderItemsValues,
 } from "@/lib/validators/manual-sale";
 
 export type ActionResult = { success?: boolean; error?: string; id?: string };
@@ -68,8 +71,10 @@ export async function createManualSaleAction(input: ManualSaleValues): Promise<A
       product_id: i.productId,
       variant_id: i.variantId || null,
       qty: i.qty,
+      unit_price: i.unitPrice ?? null,
     })),
     p_payment_method: data.paymentMethod,
+    p_discount: data.discount || 0,
     p_notes: data.notes || undefined,
   });
   if (error) return { error: error.message };
@@ -79,4 +84,36 @@ export async function createManualSaleAction(input: ManualSaleValues): Promise<A
   revalidatePath("/admin/accounting");
   revalidateTag("availability", "max");
   return { success: true, id: orderId as string };
+}
+
+// update_sales_order_items() is SECURITY DEFINER and only allows editing while the order is
+// still 'new'/'confirmed' — before mark_sales_order_done() has touched stock or accounting,
+// so an edit here needs no ledger/inventory reversal; completion later posts the final items.
+export async function updateOrderItemsAction(
+  orderId: string,
+  items: EditOrderItemsValues,
+): Promise<ActionResult> {
+  if (!isUuid(orderId)) return { error: "Invalid order id" };
+  let data;
+  try {
+    data = await validateBoth(editOrderItemsSchema, editOrderItemsZodSchema, items);
+  } catch (err) {
+    return { error: err instanceof Error ? err.message : "Invalid input" };
+  }
+  const supabase = await createClient();
+
+  const { error } = await supabase.rpc("update_sales_order_items", {
+    p_sales_order_id: orderId,
+    p_items: data.map((i) => ({
+      product_id: i.productId,
+      variant_id: i.variantId || null,
+      qty: i.qty,
+      unit_price: i.unitPrice ?? null,
+    })),
+  });
+  if (error) return { error: error.message };
+
+  revalidatePath("/admin/orders");
+  revalidateTag("availability", "max");
+  return { success: true };
 }

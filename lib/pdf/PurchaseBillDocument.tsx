@@ -1,10 +1,7 @@
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
-import type { InvoiceData } from "@/lib/data/orders";
+import type { PurchaseBillData } from "@/lib/data/purchases";
 
-// @react-pdf/renderer's built-in fonts (Helvetica etc.) don't include Arabic glyphs, and this
-// build environment has no network access to fetch an Arabic-capable font file — so the
-// invoice renders in English/Latin regardless of site locale. Swap in Font.register() with a
-// bundled Arabic TTF once one is added to the project to localize this.
+// See InvoiceDocument.tsx for why this renders in English/Latin regardless of site locale.
 const styles = StyleSheet.create({
   page: { padding: 32, fontSize: 10, fontFamily: "Helvetica", color: "#14141f" },
   header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 28 },
@@ -41,7 +38,7 @@ function money(amount: number) {
   return `E£${amount.toFixed(2)}`;
 }
 
-export function InvoiceDocument({ data }: { data: InvoiceData }) {
+export function PurchaseBillDocument({ data }: { data: PurchaseBillData }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -51,9 +48,8 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
             <Text style={styles.muted}>Mobile accessories, stationery & printing</Text>
           </View>
           <View style={styles.right}>
-            <Text style={styles.bold}>Invoice {data.invoiceNumber}</Text>
-            <Text style={styles.muted}>Order {data.orderNumber}</Text>
-            <Text style={styles.muted}>{data.issuedAt}</Text>
+            <Text style={styles.bold}>Purchase Order {data.poNumber}</Text>
+            <Text style={styles.muted}>{data.createdAt}</Text>
             <Text style={[styles.muted, styles.bold, { textTransform: "uppercase" }]}>
               {data.status}
             </Text>
@@ -61,55 +57,30 @@ export function InvoiceDocument({ data }: { data: InvoiceData }) {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.label}>Bill to</Text>
-          <Text style={styles.bold}>{data.customerName}</Text>
-          {data.customerEmail ? <Text style={styles.muted}>{data.customerEmail}</Text> : null}
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.label}>Fulfillment</Text>
-          <Text style={styles.bold}>
-            {data.fulfillmentMethod === "delivery" ? "Delivery" : "In-store pickup"}
-            {data.deliveryAddress ? ` — ${data.deliveryAddress}` : ""}
-          </Text>
-          <Text style={[styles.label, { marginTop: 8 }]}>Payment method</Text>
-          <Text style={styles.bold}>{data.paymentMethod}</Text>
+          <Text style={styles.label}>Supplier</Text>
+          <Text style={styles.bold}>{data.supplierName}</Text>
+          {data.supplierPhone ? <Text style={styles.muted}>{data.supplierPhone}</Text> : null}
+          {data.supplierEmail ? <Text style={styles.muted}>{data.supplierEmail}</Text> : null}
         </View>
 
         <View style={styles.table}>
           <View style={styles.tableHeader}>
             <Text style={[styles.colName, styles.bold]}>Item</Text>
             <Text style={[styles.colQty, styles.bold]}>Qty</Text>
-            <Text style={[styles.colPrice, styles.bold]}>Unit Price</Text>
+            <Text style={[styles.colPrice, styles.bold]}>Unit Cost</Text>
             <Text style={[styles.colTotal, styles.bold]}>Total</Text>
           </View>
           {data.items.map((item, i) => (
             <View style={styles.tableRow} key={i}>
               <Text style={styles.colName}>{item.name}</Text>
               <Text style={styles.colQty}>{item.qty}</Text>
-              <Text style={styles.colPrice}>{money(item.unitPrice)}</Text>
+              <Text style={styles.colPrice}>{money(item.unitCost)}</Text>
               <Text style={styles.colTotal}>{money(item.lineTotal)}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.totals}>
-          <View style={styles.totalRow}>
-            <Text style={styles.label}>Subtotal</Text>
-            <Text>{money(data.subtotal)}</Text>
-          </View>
-          {data.deliveryFee > 0 && (
-            <View style={styles.totalRow}>
-              <Text style={styles.label}>Delivery fee</Text>
-              <Text>{money(data.deliveryFee)}</Text>
-            </View>
-          )}
-          {data.discount > 0 && (
-            <View style={styles.totalRow}>
-              <Text style={styles.label}>Discount</Text>
-              <Text>-{money(data.discount)}</Text>
-            </View>
-          )}
           <View style={styles.totalRow}>
             <Text style={[styles.label, styles.grandTotal]}>Total</Text>
             <Text style={[styles.bold, styles.grandTotal]}>{money(data.total)}</Text>

@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
+import { Download } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getOrderDetailAdmin, getSalesReturns } from "@/lib/data/orders";
+import { getAllProductsAdmin } from "@/lib/data/products";
 import { formatEGP } from "@/lib/currency";
 import { OrderStatusActions } from "@/components/admin/order-status-actions";
 import { PaymentScreenshotViewer } from "@/components/admin/payment-screenshot-viewer";
 import { SalesReturnDialog, type ReturnableOrderItem } from "@/components/admin/sales-return-dialog";
+import { EditOrderDialog } from "@/components/admin/edit-order-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +52,15 @@ export default async function AdminOrderDetailPage({
     }))
     .filter((item) => item.returnable > 0);
 
+  const isEditable = order.status === "new" || order.status === "confirmed";
+  const products = isEditable ? await getAllProductsAdmin() : [];
+  const editableItems = order.items.map((item) => ({
+    productId: item.product_id,
+    variantId: item.variant_id ?? "",
+    qty: item.qty,
+    unitPrice: item.unit_price,
+  }));
+
   return (
     <div className="max-w-3xl">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -59,6 +71,9 @@ export default async function AdminOrderDetailPage({
           </p>
         </div>
         <div className="flex items-center gap-3">
+          {isEditable && (
+            <EditOrderDialog orderId={order.id} products={products} initialItems={editableItems} />
+          )}
           <OrderStatusActions orderId={order.id} status={order.status} />
           {order.status === "done" && (
             <SalesReturnDialog salesOrderId={order.id} items={returnableItems} />
@@ -109,7 +124,7 @@ export default async function AdminOrderDetailPage({
           {order.items.map((item) => (
             <li key={item.id} className="flex justify-between text-sm">
               <span>
-                {item.qty}× {item.name_snapshot_en}
+                {item.qty}× {locale === "ar" ? item.name_snapshot_ar : item.name_snapshot_en}
                 {item.qty_returned > 0 && (
                   <span className="ms-2 text-xs text-danger">
                     {t("returns.returnedQty", { qty: item.qty_returned })}
@@ -138,12 +153,30 @@ export default async function AdminOrderDetailPage({
               <span>{formatEGP(order.delivery_fee, "en")}</span>
             </div>
           )}
+          {order.discount > 0 && (
+            <div className="flex justify-between text-muted">
+              <span>{t("manualSale.discount")}</span>
+              <span>-{formatEGP(order.discount, "en")}</span>
+            </div>
+          )}
           <div className="flex justify-between text-base font-extrabold">
             <span>{tCheckout("total")}</span>
             <span className="text-primary">{formatEGP(order.total, "en")}</span>
           </div>
         </div>
       </div>
+
+      {order.invoice && (
+        <a
+          href={`/api/invoices/${order.id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-bold transition-colors hover:border-primary"
+        >
+          <Download className="h-4 w-4" />
+          {tCheckout("downloadInvoice")}
+        </a>
+      )}
 
       {returns.length > 0 && (
         <div className="mt-6">

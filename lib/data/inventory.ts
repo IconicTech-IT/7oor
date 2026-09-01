@@ -97,8 +97,10 @@ export async function getLowStockCount(): Promise<number> {
 
 export type MovementRow = {
   id: string;
-  productName: string;
-  variantName: string | null;
+  productNameAr: string;
+  productNameEn: string;
+  variantNameAr: string | null;
+  variantNameEn: string | null;
   direction: string;
   qty: number;
   reason: string;
@@ -111,7 +113,7 @@ export async function getRecentMovements(limit = 50): Promise<MovementRow[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("inventory_movements")
-    .select("*, product:products(name_en), variant:product_variants(name_en)")
+    .select("*, product:products(name_ar, name_en), variant:product_variants(name_ar, name_en)")
     .order("created_at", { ascending: false })
     .limit(limit);
 
@@ -122,8 +124,10 @@ export async function getRecentMovements(limit = 50): Promise<MovementRow[]> {
 
   return (data ?? []).map((m) => ({
     id: m.id,
-    productName: (m.product as { name_en: string } | null)?.name_en ?? "—",
-    variantName: (m.variant as { name_en: string } | null)?.name_en ?? null,
+    productNameAr: (m.product as { name_ar: string } | null)?.name_ar ?? "—",
+    productNameEn: (m.product as { name_en: string } | null)?.name_en ?? "—",
+    variantNameAr: (m.variant as { name_ar: string } | null)?.name_ar ?? null,
+    variantNameEn: (m.variant as { name_en: string } | null)?.name_en ?? null,
     direction: m.direction,
     qty: m.qty,
     reason: m.reason,

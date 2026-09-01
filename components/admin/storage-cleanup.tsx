@@ -7,15 +7,10 @@ import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { deleteStorageObjectsAction } from "@/lib/actions/admin-storage";
+import { formatBytes } from "@/lib/format";
 
 type OrphanedImage = { key: string; url: string; size: number; lastModified: string };
 type StaleAttachment = { key: string; size: number; lastModified: string; ownerLabel: string; closedAt: string };
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
 
 function useSelection() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -190,4 +185,3 @@ export function StaleAttachmentsPanel({ ownerLabel, items }: { ownerLabel: strin
   );
 }
 
-export { formatBytes };

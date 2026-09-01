@@ -6,9 +6,15 @@ import { OrdersRealtimeList } from "@/components/admin/orders-realtime-list";
 
 export const dynamic = "force-dynamic";
 
-export default async function AdminOrdersPage() {
-  const orders = await getAllOrdersAdmin();
+export default async function AdminOrdersPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) {
+  const { date } = await searchParams;
+  const orders = await getAllOrdersAdmin(date);
   const t = await getTranslations("admin.orders");
+  const tCommon = await getTranslations("admin.common");
 
   return (
     <div>
@@ -25,6 +31,33 @@ export default async function AdminOrdersPage() {
           {t("manualSale.newSale")}
         </Link>
       </div>
+
+      <form className="mt-4 flex flex-wrap items-end gap-3">
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-muted">{tCommon("date")}</label>
+          <input
+            type="date"
+            name="date"
+            defaultValue={date ?? ""}
+            className="rounded-lg border border-border px-3 py-2 text-sm"
+          />
+        </div>
+        <button
+          type="submit"
+          className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary-hover"
+        >
+          {tCommon("apply")}
+        </button>
+        {date && (
+          <Link
+            href="/admin/orders"
+            className="rounded-lg border border-border px-4 py-2 text-sm font-bold hover:border-primary"
+          >
+            {tCommon("allDates")}
+          </Link>
+        )}
+      </form>
+
       <div className="mt-6">
         <OrdersRealtimeList orders={orders} />
       </div>

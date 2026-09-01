@@ -220,7 +220,10 @@
     },
     "common": {
       "selectPlaceholder": "— اختر —",
-      "noneOption": "— بدون —"
+      "noneOption": "— بدون —",
+      "date": "التاريخ",
+      "apply": "تطبيق",
+      "allDates": "كل الأيام"
     },
     "dashboard": {
       "title": "لوحة التحكم",
@@ -364,6 +367,7 @@
         "product": "المنتج",
         "variant": "الخيار",
         "qty": "الكمية",
+        "unitPrice": "سعر الوحدة",
         "lineTotal": "إجمالي السطر",
         "addItem": "إضافة صنف",
         "paymentMethod": "طريقة الدفع",
@@ -373,11 +377,24 @@
           "vodafone_cash": "فودافون كاش",
           "other_wallet": "محفظة أخرى"
         },
+        "subtotal": "الإجمالي الفرعي",
+        "discount": "الخصم",
+        "discountExceedsSubtotal": "الخصم أكبر من الإجمالي الفرعي",
         "notes": "ملاحظات",
         "total": "الإجمالي",
         "saving": "جاري الحفظ...",
         "save": "تسجيل البيع",
         "toastCreated": "تم تسجيل البيع — تم تحديث المخزون والحسابات"
+      },
+      "source": {
+        "manual": "يدوي",
+        "online": "الموقع"
+      },
+      "edit": {
+        "editOrder": "تعديل الطلب",
+        "saving": "جاري الحفظ...",
+        "save": "حفظ التعديلات",
+        "toastUpdated": "تم تعديل الطلب"
       }
     },
     "requests": {
@@ -420,8 +437,9 @@
       "reasons": {
         "adjustment": "تسوية",
         "damaged": "تالف",
-        "purchase": "شراء",
-        "sale": "بيع"
+        "purchase-received": "تم استلام شراء",
+        "sale-completed": "بيع مكتمل",
+        "return": "مرتجع"
       },
       "adjust": "تعديل",
       "adjustDialogTitle": "تعديل المخزون — {label}",
@@ -462,7 +480,8 @@
         "items": "العناصر",
         "receivedQty": "تم استلام {qty}",
         "totalCost": "إجمالي التكلفة",
-        "notes": "ملاحظات"
+        "notes": "ملاحظات",
+        "downloadPdf": "تحميل PDF"
       },
       "form": {
         "supplier": "المورد",

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Download } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getPurchaseOrderDetail, getPurchaseReturns } from "@/lib/data/purchases";
 import { formatEGP } from "@/lib/currency";
@@ -65,8 +66,14 @@ export default async function PurchaseOrderDetailPage({
           {po.items.map((item) => (
             <li key={item.id} className="flex justify-between text-sm">
               <span>
-                {item.qty_ordered}× {item.product?.name_en}
-                {item.variant && <span className="text-muted"> — {item.variant.name_en}</span>}
+                {item.qty_ordered}×{" "}
+                {locale === "ar" ? item.product?.name_ar : item.product?.name_en}
+                {item.variant && (
+                  <span className="text-muted">
+                    {" "}
+                    — {locale === "ar" ? item.variant.name_ar : item.variant.name_en}
+                  </span>
+                )}
                 {po.status === "received" && (
                   <span className="ms-2 text-xs text-success">
                     {t("detail.receivedQty", { qty: item.qty_received })}
@@ -90,6 +97,16 @@ export default async function PurchaseOrderDetailPage({
           <span className="text-primary">{formatEGP(total, "en")}</span>
         </div>
       </div>
+
+      <a
+        href={`/api/purchase-orders/${po.id}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-bold transition-colors hover:border-primary"
+      >
+        <Download className="h-4 w-4" />
+        {t("detail.downloadPdf")}
+      </a>
 
       {po.notes && (
         <div className="mt-4 rounded-2xl border border-border bg-card p-4 text-sm">

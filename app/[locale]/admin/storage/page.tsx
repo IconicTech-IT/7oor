@@ -1,7 +1,8 @@
 import { HardDrive } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getStorageOverview, getOrphanedProductImages, getStaleAttachments } from "@/lib/data/storage";
-import { OrphanedImagesPanel, StaleAttachmentsPanel, formatBytes } from "@/components/admin/storage-cleanup";
+import { OrphanedImagesPanel, StaleAttachmentsPanel } from "@/components/admin/storage-cleanup";
+import { formatBytes } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 

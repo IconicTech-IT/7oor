@@ -22,6 +22,13 @@ const client = new S3Client({
 const BUCKET = process.env.R2_BUCKET_NAME!;
 const PUBLIC_URL = (process.env.R2_PUBLIC_URL ?? "").replace(/\/$/, "");
 
+const isConfigured = Boolean(
+  process.env.R2_ACCOUNT_ID &&
+    process.env.R2_ACCESS_KEY_ID &&
+    process.env.R2_SECRET_ACCESS_KEY &&
+    process.env.R2_BUCKET_NAME,
+);
+
 export type R2Prefix = "product-images" | "payment-screenshots" | "request-attachments";
 
 export type R2Object = { key: string; size: number; lastModified: Date };
@@ -62,7 +69,17 @@ export async function deleteObjects(keys: string[]): Promise<void> {
   }
 }
 
+/**
+ * Only the read path degrades gracefully — the admin storage/media pages list objects just to
+ * render an overview, and R2 not being configured yet shouldn't crash those pages. Uploads and
+ * deletes still throw normally: those are real actions that genuinely can't succeed without it.
+ */
 export async function listObjects(prefix: string): Promise<R2Object[]> {
+  if (!isConfigured) {
+    console.error("listObjects: R2 is not configured (missing R2_* env vars) — returning empty");
+    return [];
+  }
+
   const out: R2Object[] = [];
   let ContinuationToken: string | undefined;
   do {

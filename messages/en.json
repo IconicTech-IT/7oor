@@ -220,7 +220,10 @@
     },
     "common": {
       "selectPlaceholder": "— Select —",
-      "noneOption": "— None —"
+      "noneOption": "— None —",
+      "date": "Date",
+      "apply": "Apply",
+      "allDates": "All dates"
     },
     "dashboard": {
       "title": "Dashboard",
@@ -364,6 +367,7 @@
         "product": "Product",
         "variant": "Variant",
         "qty": "Qty",
+        "unitPrice": "Unit price",
         "lineTotal": "Line total",
         "addItem": "Add item",
         "paymentMethod": "Payment method",
@@ -373,11 +377,24 @@
           "vodafone_cash": "Vodafone Cash",
           "other_wallet": "Other wallet"
         },
+        "subtotal": "Subtotal",
+        "discount": "Discount",
+        "discountExceedsSubtotal": "Discount is greater than the subtotal",
         "notes": "Notes",
         "total": "Total",
         "saving": "Saving...",
         "save": "Record sale",
         "toastCreated": "Sale recorded — stock and accounting updated"
+      },
+      "source": {
+        "manual": "Manual",
+        "online": "Website"
+      },
+      "edit": {
+        "editOrder": "Edit order",
+        "saving": "Saving...",
+        "save": "Save changes",
+        "toastUpdated": "Order updated"
       }
     },
     "requests": {
@@ -420,8 +437,9 @@
       "reasons": {
         "adjustment": "Adjustment",
         "damaged": "Damaged",
-        "purchase": "Purchase",
-        "sale": "Sale"
+        "purchase-received": "Purchase received",
+        "sale-completed": "Sale completed",
+        "return": "Return"
       },
       "adjust": "Adjust",
       "adjustDialogTitle": "Adjust stock — {label}",
@@ -462,7 +480,8 @@
         "items": "Items",
         "receivedQty": "received {qty}",
         "totalCost": "Total cost",
-        "notes": "Notes"
+        "notes": "Notes",
+        "downloadPdf": "Download PDF"
       },
       "form": {
         "supplier": "Supplier",

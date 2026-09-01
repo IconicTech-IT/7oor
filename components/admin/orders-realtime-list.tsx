@@ -82,8 +82,20 @@ export function OrdersRealtimeList({ orders }: { orders: Order[] }) {
               className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition-colors hover:border-primary"
             >
               <div>
-                <p className="font-bold">{order.order_number}</p>
+                <div className="flex items-center gap-2">
+                  <p className="font-bold">{order.order_number}</p>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
+                      order.source === "manual"
+                        ? "bg-accent/10 text-accent"
+                        : "bg-muted/10 text-muted"
+                    }`}
+                  >
+                    {t(`source.${order.source}` as "source.manual")}
+                  </span>
+                </div>
                 <p className="text-xs text-muted">
+                  {new Date(order.created_at).toLocaleString("en-GB")} ·{" "}
                   {t("itemCount", { count: order.items.length })} · {fulfillmentLabel} · {paymentLabel}
                 </p>
               </div>

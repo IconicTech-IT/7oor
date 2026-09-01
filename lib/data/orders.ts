@@ -32,13 +32,24 @@ export async function getOrderDetail(orderId: string) {
   return data;
 }
 
-/** Staff/admin view — RLS on sales_orders already scopes SELECT to staff/admin + owner. */
-export async function getAllOrdersAdmin() {
+/**
+ * Staff/admin view — RLS on sales_orders already scopes SELECT to staff/admin + owner.
+ * `date` (YYYY-MM-DD) narrows to orders created that single calendar day, when provided.
+ */
+export async function getAllOrdersAdmin(date?: string) {
   const supabase = await createClient();
-  const { data, error } = await supabase
+  let query = supabase
     .from("sales_orders")
     .select("*, invoice:invoices(*), items:sales_order_items(*)")
     .order("created_at", { ascending: false });
+
+  if (date) {
+    const start = `${date}T00:00:00`;
+    const end = `${date}T23:59:59.999`;
+    query = query.gte("created_at", start).lte("created_at", end);
+  }
+
+  const { data, error } = await query;
 
   if (error) console.error("getAllOrdersAdmin:", error.message);
   return data ?? [];
@@ -86,6 +97,7 @@ export type InvoiceData = {
   items: { name: string; qty: number; unitPrice: number; lineTotal: number }[];
   subtotal: number;
   deliveryFee: number;
+  discount: number;
   total: number;
   fulfillmentMethod: string;
   deliveryAddress: string | null;
@@ -128,6 +140,7 @@ export async function getInvoiceData(orderId: string): Promise<InvoiceData | nul
     })),
     subtotal: order.subtotal,
     deliveryFee: order.delivery_fee,
+    discount: order.discount,
     total: order.total,
     fulfillmentMethod: order.fulfillment_method,
     deliveryAddress: order.delivery_address,

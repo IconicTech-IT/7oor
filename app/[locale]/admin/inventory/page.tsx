@@ -2,6 +2,7 @@ import { AlertTriangle } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getInventoryOverview, getRecentMovements } from "@/lib/data/inventory";
 import { StockAdjustDialog } from "@/components/admin/stock-adjust-dialog";
+import { InventoryRealtimeBoundary } from "@/components/admin/inventory-realtime-boundary";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,7 @@ export default async function AdminInventoryPage() {
   const locale = await getLocale();
 
   return (
+    <InventoryRealtimeBoundary>
     <div>
       <h1 className="text-2xl font-extrabold">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
@@ -75,11 +77,14 @@ export default async function AdminInventoryPage() {
             </tr>
           </thead>
           <tbody>
-            {movements.map((m) => (
+            {movements.map((m) => {
+              const productName = locale === "ar" ? m.productNameAr : m.productNameEn;
+              const variantName = locale === "ar" ? m.variantNameAr : m.variantNameEn;
+              return (
               <tr key={m.id} className="border-b border-border last:border-0">
                 <td className="px-4 py-3">
-                  {m.productName}
-                  {m.variantName && <span className="text-muted"> — {m.variantName}</span>}
+                  {productName}
+                  {variantName && <span className="text-muted"> — {variantName}</span>}
                 </td>
                 <td className="px-4 py-3 capitalize text-muted">
                   {t.has(`reasons.${m.reason}`)
@@ -98,10 +103,12 @@ export default async function AdminInventoryPage() {
                   {new Date(m.createdAt).toLocaleString("en-GB")}
                 </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
     </div>
+    </InventoryRealtimeBoundary>
   );
 }

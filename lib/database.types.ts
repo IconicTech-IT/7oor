@@ -761,6 +761,7 @@ export type Database = {
           customer_id: string
           delivery_address: string | null
           delivery_fee: number
+          discount: number
           done_at: string | null
           fulfillment_method: string
           id: string
@@ -768,6 +769,7 @@ export type Database = {
           order_number: string
           payment_method: string
           payment_screenshot_url: string | null
+          source: string
           status: string
           subtotal: number
           total: number
@@ -780,6 +782,7 @@ export type Database = {
           customer_id: string
           delivery_address?: string | null
           delivery_fee?: number
+          discount?: number
           done_at?: string | null
           fulfillment_method: string
           id?: string
@@ -787,6 +790,7 @@ export type Database = {
           order_number?: string
           payment_method: string
           payment_screenshot_url?: string | null
+          source?: string
           status?: string
           subtotal?: number
           total?: number
@@ -799,6 +803,7 @@ export type Database = {
           customer_id?: string
           delivery_address?: string | null
           delivery_fee?: number
+          discount?: number
           done_at?: string | null
           fulfillment_method?: string
           id?: string
@@ -806,6 +811,7 @@ export type Database = {
           order_number?: string
           payment_method?: string
           payment_screenshot_url?: string | null
+          source?: string
           status?: string
           subtotal?: number
           total?: number
@@ -1070,7 +1076,12 @@ export type Database = {
         Returns: undefined
       }
       create_manual_sale: {
-        Args: { p_items: Json; p_notes?: string; p_payment_method: string }
+        Args: {
+          p_discount?: number
+          p_items: Json
+          p_notes?: string
+          p_payment_method: string
+        }
         Returns: string
       }
       create_purchase_return: {
@@ -1132,6 +1143,10 @@ export type Database = {
       }
       set_user_role: {
         Args: { p_new_role: string; p_target_user_id: string }
+        Returns: undefined
+      }
+      update_sales_order_items: {
+        Args: { p_items: Json; p_sales_order_id: string }
         Returns: undefined
       }
     }
