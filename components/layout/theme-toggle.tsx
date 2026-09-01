@@ -4,11 +4,15 @@ import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
 import { Sun, Moon } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useMounted } from "@/lib/use-mounted";
 
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const t = useTranslations("common");
-  const label = resolvedTheme === "dark" ? t("toggleThemeLight") : t("toggleThemeDark");
+  const mounted = useMounted();
+
+  const isDark = mounted && resolvedTheme === "dark";
+  const label = isDark ? t("toggleThemeLight") : t("toggleThemeDark");
 
   return (
     <Tooltip label={label}>
@@ -18,7 +22,7 @@ export function ThemeToggle() {
         className="inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-foreground/5"
         aria-label={label}
       >
-        {resolvedTheme === "dark" ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
+        {isDark ? <Sun className="h-[18px] w-[18px]" /> : <Moon className="h-[18px] w-[18px]" />}
       </button>
     </Tooltip>
   );

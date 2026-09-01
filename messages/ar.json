@@ -120,6 +120,7 @@
     "fulfillment": "طريقة الاستلام",
     "pickup": "استلام من المحل",
     "delivery": "توصيل",
+    "deliveryUnavailable": "غير متاح حاليًا",
     "deliveryAddress": "عنوان التوصيل",
     "deliveryFee": "رسوم التوصيل",
     "payment": "طريقة الدفع",
@@ -355,6 +356,28 @@
         "save": "حفظ المرتجع",
         "history": "المرتجعات",
         "returnedQty": "تم إرجاع {qty}"
+      },
+      "manualSale": {
+        "newSale": "تسجيل بيع يدوي",
+        "pageTitle": "تسجيل بيع يدوي",
+        "lineItems": "الأصناف المباعة",
+        "product": "المنتج",
+        "variant": "الخيار",
+        "qty": "الكمية",
+        "lineTotal": "إجمالي السطر",
+        "addItem": "إضافة صنف",
+        "paymentMethod": "طريقة الدفع",
+        "payment": {
+          "cash": "كاش",
+          "instapay": "إنستاباي",
+          "vodafone_cash": "فودافون كاش",
+          "other_wallet": "محفظة أخرى"
+        },
+        "notes": "ملاحظات",
+        "total": "الإجمالي",
+        "saving": "جاري الحفظ...",
+        "save": "تسجيل البيع",
+        "toastCreated": "تم تسجيل البيع — تم تحديث المخزون والحسابات"
       }
     },
     "requests": {

@@ -143,24 +143,39 @@ export function CheckoutForm({
                     <div className="flex flex-col gap-5">
                       <h2 className="text-lg font-bold">{t("fulfillment")}</h2>
                       <div className="grid gap-3 sm:grid-cols-2">
-                        {(["pickup", "delivery"] as const).map((method) => (
-                          <label
-                            key={method}
-                            className={`cursor-pointer rounded-xl border p-4 text-sm font-semibold transition-colors ${
-                              values.fulfillmentMethod === method
-                                ? "border-primary bg-primary/5 text-primary"
-                                : "border-border"
-                            }`}
-                          >
-                            <Field
-                              type="radio"
-                              name="fulfillmentMethod"
-                              value={method}
-                              className="hidden"
-                            />
-                            {t(method)}
-                          </label>
-                        ))}
+                        {(["pickup", "delivery"] as const).map((method) => {
+                          // Delivery is temporarily paused — kept in the UI (disabled) and
+                          // fully wired server-side so it can be switched back on later.
+                          const disabled = method === "delivery";
+                          return (
+                            <label
+                              key={method}
+                              className={`rounded-xl border p-4 text-sm font-semibold transition-colors ${
+                                disabled
+                                  ? "cursor-not-allowed border-border opacity-50"
+                                  : "cursor-pointer border-border"
+                              } ${
+                                !disabled && values.fulfillmentMethod === method
+                                  ? "border-primary bg-primary/5 text-primary"
+                                  : ""
+                              }`}
+                            >
+                              <Field
+                                type="radio"
+                                name="fulfillmentMethod"
+                                value={method}
+                                disabled={disabled}
+                                className="hidden"
+                              />
+                              {t(method)}
+                              {disabled && (
+                                <span className="ms-1.5 text-xs font-normal text-muted">
+                                  ({t("deliveryUnavailable")})
+                                </span>
+                              )}
+                            </label>
+                          );
+                        })}
                       </div>
                       {isDelivery && (
                         <div>

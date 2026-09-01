@@ -117,9 +117,12 @@ export function RequestForm({ categories, prefillDescription }: Props) {
                 <Field type="radio" name="fulfillmentMethod" value="pickup" />
                 {tCheckout("pickup")}
               </label>
-              <label className="flex items-center gap-2 text-sm">
-                <Field type="radio" name="fulfillmentMethod" value="delivery" />
-                {tCheckout("delivery")}
+              {/* Delivery is temporarily paused — kept in the UI (disabled) and fully
+                  wired server-side so it can be switched back on later. */}
+              <label className="flex items-center gap-2 text-sm text-muted">
+                <Field type="radio" name="fulfillmentMethod" value="delivery" disabled />
+                {tCheckout("delivery")}{" "}
+                <span className="text-xs">({tCheckout("deliveryUnavailable")})</span>
               </label>
             </div>
           </div>

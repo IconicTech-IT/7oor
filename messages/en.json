@@ -120,6 +120,7 @@
     "fulfillment": "Fulfillment method",
     "pickup": "In-store pickup",
     "delivery": "Delivery",
+    "deliveryUnavailable": "Not available right now",
     "deliveryAddress": "Delivery address",
     "deliveryFee": "Delivery fee",
     "payment": "Payment method",
@@ -355,6 +356,28 @@
         "save": "Save return",
         "history": "Returns",
         "returnedQty": "returned {qty}"
+      },
+      "manualSale": {
+        "newSale": "Record manual sale",
+        "pageTitle": "Record manual sale",
+        "lineItems": "Items sold",
+        "product": "Product",
+        "variant": "Variant",
+        "qty": "Qty",
+        "lineTotal": "Line total",
+        "addItem": "Add item",
+        "paymentMethod": "Payment method",
+        "payment": {
+          "cash": "Cash",
+          "instapay": "InstaPay",
+          "vodafone_cash": "Vodafone Cash",
+          "other_wallet": "Other wallet"
+        },
+        "notes": "Notes",
+        "total": "Total",
+        "saving": "Saving...",
+        "save": "Record sale",
+        "toastCreated": "Sale recorded — stock and accounting updated"
       }
     },
     "requests": {

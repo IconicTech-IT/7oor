@@ -23,7 +23,7 @@ export function HeroIllustration() {
           cy="160"
           r="120"
           fill="none"
-          stroke="var(--background)"
+          stroke="var(--foreground)"
           strokeOpacity="0.15"
           strokeWidth="1.5"
           strokeDasharray="4 8"
@@ -34,7 +34,7 @@ export function HeroIllustration() {
       </svg>
 
       <motion.div
-        className="absolute inset-0 m-auto flex h-32 w-32 items-center justify-center rounded-[2rem] bg-background/10 text-background backdrop-blur-sm"
+        className="absolute inset-0 m-auto flex h-32 w-32 items-center justify-center rounded-[2rem] bg-foreground/5 text-foreground backdrop-blur-sm"
         initial={reduceMotion ? { scale: 1, opacity: 1 } : { scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={reduceMotion ? { duration: 0 } : { duration: 0.5, ease: "easeOut" }}
